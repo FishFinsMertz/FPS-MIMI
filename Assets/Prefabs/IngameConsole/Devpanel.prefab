@@ -290,6 +290,8 @@ GameObject:
   - component: {fileID: 6351051940200656284}
   - component: {fileID: 9014801894230926148}
   - component: {fileID: 3532808749636390566}
+  - component: {fileID: 4779856786696852221}
+  - component: {fileID: 2187297022636531107}
   m_Layer: 5
   m_Name: Devpanel
   m_TagString: Untagged
@@ -413,7 +415,52 @@ MonoBehaviour:
   Content: {fileID: 5462153492035061051}
   ConsoleMessagePrefab: {fileID: 4729939836682623451, guid: ef9dac93df193c54da4217f794ec0b93,
     type: 3}
+  toggleKey: {fileID: -959452493079542782, guid: f736975aa8e0ef4448f849be8703423d,
+    type: 3}
   consolePaddingRate: 0.8
+--- !u!114 &4779856786696852221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7297650479738068570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: f736975aa8e0ef4448f849be8703423d,
+    type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!225 &2187297022636531107
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7297650479738068570}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8960899041718894593
 GameObject:
   m_ObjectHideFlags: 0
