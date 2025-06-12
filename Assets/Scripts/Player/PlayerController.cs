@@ -31,7 +31,7 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        Debug.Log(playerInput.currentControlScheme);
+        // Debug.Log(playerInput.currentControlScheme);
         //Debug.Log(currentState);  
         currentState.Update(); 
     }
