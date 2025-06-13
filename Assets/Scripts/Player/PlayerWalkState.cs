@@ -6,20 +6,19 @@ public class PlayerWalkState : PlayerState
 
     public override void FixedUpdate()
     {
-        // Make dis shit better brah, use unity velocity
-
-        Vector3 moveDir = new Vector3(0, 0, 0);
-
-        if (Input.GetKey(KeyCode.W))
+        Vector2 moveInput = player.GetMoveInput();
+        Vector3 moveDir = new Vector3(moveInput.x, 0, moveInput.y);
+        
+        if (moveDir.magnitude > 0)
         {
-            moveDir.x += 1;
+            moveDir.Normalize();
+            player.transform.position += moveDir * Time.deltaTime * player.GetMoveSpeed();
         }
-        player.transform.position += moveDir * Time.deltaTime * 5;
     }
 
     public override void Update()
     {
-        //Change states here with conditionals for now
+        // Change states here with conditionals for now
         return;
     }
 }
