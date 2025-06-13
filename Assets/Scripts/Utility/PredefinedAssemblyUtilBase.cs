@@ -48,8 +48,14 @@ public static class PredefinedAssemblyUtil
             }
         }
 
-        AddTypesFromAssembly(assemblyTypes[AssemblyType.AssemblyCSharp], interfaceType, types);
-        AddTypesFromAssembly(assemblyTypes[AssemblyType.AssemblyCSharpFirstPass], interfaceType, types);
+        if (assemblyTypes.ContainsKey(AssemblyType.AssemblyCSharp))
+        {
+            AddTypesFromAssembly(assemblyTypes[AssemblyType.AssemblyCSharp], interfaceType, types);
+        }
+        if (assemblyTypes.ContainsKey(AssemblyType.AssemblyCSharpFirstPass))
+        {
+            AddTypesFromAssembly(assemblyTypes[AssemblyType.AssemblyCSharpFirstPass], interfaceType, types);
+        }
 
         return types;
     }

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -9,15 +10,20 @@ public class GroundSwarmController : NetworkBehaviour
     [Header("CHASE TARGETS")] // DELETE THIS ONCE A BETTER SYSTEM IS MADE WITH NETWORKING IN MIND
     public List<GameObject> targets;
 
+    [Header("CHASE STATS")]
+    public float targetUpdateTime = 1f;
+    public float moveSpeed;
+
     // Private or Hidden variables
     private GroundSwarmState currentState;
     private GameObject currentTarget;
-    [HideInInspector] private Rigidbody rb;
+    [HideInInspector] public Rigidbody rb;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         ChangeState(new GroundSwarmChaseState(this));
+        StartCoroutine(UpdateTargetRoutine());
     }
 
     void FixedUpdate()
@@ -27,8 +33,7 @@ public class GroundSwarmController : NetworkBehaviour
 
     void Update()
     {
-        Debug.Log(currentState);
-        
+        //Debug.Log(currentState);
         currentState.Update();
     }
 
@@ -41,13 +46,24 @@ public class GroundSwarmController : NetworkBehaviour
         currentState.Enter();
     }
 
-    /*                                             FOR FUTURE: ADD A BETTER ALGORITHM THAT CHOOSES THE TARGET */
+    /*                                            FOR FUTURE: ADD A BETTER ALGORITHM THAT CHOOSES THE TARGET                                          */
+
+    private IEnumerator UpdateTargetRoutine()
+    {
+        while (true)
+        {
+            FindClosestTarget();
+            yield return new WaitForSeconds(targetUpdateTime);
+            Debug.Log(GetCurrentTarget());
+        }
+    }
     public GameObject GetCurrentTarget()
     {
+        FindClosestTarget();
         return currentTarget;
     }
 
-    private GameObject FindClosestTarget()
+    private void FindClosestTarget()
     {
         float temp = Mathf.Infinity;
         foreach (GameObject target in targets)
@@ -59,8 +75,5 @@ public class GroundSwarmController : NetworkBehaviour
                 temp = distanceToTarget;
             }
         }
-
-        // No targets found
-        return null;
     }
 }
