@@ -8,5 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/NetworkTutorial.unity
     guid: f8d1d68292c93164e8352ff04ab6933b
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: f736975aa8e0ef4448f849be8703423d,
+      type: 3}
   m_UseUCBPForAssetBundles: 0

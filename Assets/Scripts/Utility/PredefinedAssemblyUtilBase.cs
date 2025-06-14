@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 public static class PredefinedAssemblyUtil
@@ -47,7 +47,6 @@ public static class PredefinedAssemblyUtil
                 assemblyTypes.Add((AssemblyType) assemblyType, assemblies[i].GetTypes());
             }
         }
-
         if (assemblyTypes.ContainsKey(AssemblyType.AssemblyCSharp))
         {
             AddTypesFromAssembly(assemblyTypes[AssemblyType.AssemblyCSharp], interfaceType, types);
