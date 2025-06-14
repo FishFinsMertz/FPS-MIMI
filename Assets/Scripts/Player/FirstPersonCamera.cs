@@ -11,14 +11,14 @@ public class FirstPersonCamera : MonoBehaviour
     [Header("Player Specs")]
     [SerializeField] private float cameraSensitivity = 1;
 
-    private Camera camera;
+    private Camera myCamera;
     private PlayerController playerController;
     private EventBinding<LocalPlayerSpawned> playerSpawnEventBinding;
     private float cameraXRotation = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        camera = Camera.main;
+        myCamera = Camera.main;
     }
 
     private void OnEnable()
@@ -37,15 +37,15 @@ public class FirstPersonCamera : MonoBehaviour
     {
         if (!playerController) { return; }
         Vector2 lookDir = playerController.GetLookInput();
-        camera.transform.Rotate(Vector3.up, lookDir.x * Time.deltaTime * cameraBaseMultiplier * cameraSensitivity, Space.World);
+        myCamera.transform.Rotate(Vector3.up, lookDir.x * Time.deltaTime * cameraBaseMultiplier * cameraSensitivity, Space.World);
         
         cameraXRotation -= lookDir.y * Time.deltaTime * cameraBaseMultiplier * cameraSensitivity;
         cameraXRotation = Mathf.Clamp(cameraXRotation, cameraXMinRotation, cameraXMaxRotation);
-        Vector3 targetRotation = camera.transform.eulerAngles;
+        Vector3 targetRotation = myCamera.transform.eulerAngles;
         targetRotation.x = cameraXRotation;
-        camera.transform.eulerAngles = targetRotation;
+        myCamera.transform.eulerAngles = targetRotation;
         
-        camera.transform.position = playerController.transform.position + cameraPlayerOffset;
+        myCamera.transform.position = playerController.transform.position + cameraPlayerOffset;
     }
 
     void Initialize(LocalPlayerSpawned playerSpawnedEvent) 
