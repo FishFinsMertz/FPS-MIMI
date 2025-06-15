@@ -14,11 +14,6 @@ public struct ReloadEvent : IEvent
     public GameObject gunOwner;
 }
 
-public struct SpawnBulletInformation 
-{
-    public Vector3 bulletOrigin;
-    public Vector3 targetDirection;
-}
 public class GunComponent : NetworkBehaviour
 {
     EventBinding<ShootEvent> shootEventBinding;
@@ -49,6 +44,7 @@ public class GunComponent : NetworkBehaviour
     private void OnDisable()
     {
         EventBus<ShootEvent>.Deregister(shootEventBinding);
+        EventBus<ReloadEvent>.Deregister(reloadEventBinding);
     }
 
     void Shoot(ShootEvent shootEvent) 
