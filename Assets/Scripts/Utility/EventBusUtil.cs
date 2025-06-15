@@ -50,7 +50,7 @@ public static class EventBusUtil {
         for (int i = 0; i < EventTypes.Count; i++) {
             var busType = EventTypes[i];
             var clearMethod = busType.GetMethod("Clear", BindingFlags.Static | BindingFlags.NonPublic);
-            clearMethod.Invoke(null, null);
+            if (clearMethod != null) clearMethod.Invoke(null, null);
         }
     }
 }

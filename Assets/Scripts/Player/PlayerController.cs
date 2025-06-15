@@ -20,6 +20,7 @@ public class PlayerController : NetworkBehaviour
         playerInput.actions.FindAction("Move").canceled += OnMove;
         playerInput.actions.FindAction("Look").performed += OnLook;
         playerInput.actions.FindAction("Look").canceled += OnLook;
+        playerInput.actions.FindAction("Attack").performed += OnAttack;
     }
 
     void Start()
@@ -56,6 +57,14 @@ public class PlayerController : NetworkBehaviour
     public void OnLook(InputAction.CallbackContext ctx) 
     {
         lookInput = ctx.ReadValue<Vector2>();
+    }
+    public void OnAttack(InputAction.CallbackContext ctx) 
+    {
+        EventBus<ShootEvent>.Raise(new ShootEvent{
+            gunOwner = gameObject,
+            bulletOrigin = gameObject.transform.position,
+            targetDirection = Camera.main.transform.forward,
+        });
     }
     public Vector2 GetMoveInput() => moveInput;
     public Vector2 GetLookInput() => lookInput;
