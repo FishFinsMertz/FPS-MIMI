@@ -21,6 +21,8 @@ public class PlayerController : NetworkBehaviour
         playerInput.actions.FindAction("Look").performed += OnLook;
         playerInput.actions.FindAction("Look").canceled += OnLook;
         playerInput.actions.FindAction("Attack").performed += OnAttack;
+        playerInput.actions.FindAction("Jump").started += OnJetpackStart;
+        playerInput.actions.FindAction("Jump").canceled += OnJetpackEnd;
     }
 
     void Start()
@@ -65,6 +67,14 @@ public class PlayerController : NetworkBehaviour
             bulletOrigin = gameObject.transform.position,
             targetDirection = Camera.main.transform.forward,
         });
+    }
+    public void OnJetpackStart(InputAction.CallbackContext ctx) 
+    {
+        EventBus<JetpackStart>.Raise(new JetpackStart { jetpackOwner = gameObject });
+    }
+    public void OnJetpackEnd(InputAction.CallbackContext ctx)
+    {
+        EventBus<JetpackEnd>.Raise(new JetpackEnd { jetpackOwner = gameObject });
     }
     public Vector2 GetMoveInput() => moveInput;
     public Vector2 GetLookInput() => lookInput;
