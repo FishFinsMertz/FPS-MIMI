@@ -1,4 +1,3 @@
-using Unity.Netcode;
 using UnityEngine;
 
 public struct JetpackStart : IEvent 
@@ -10,7 +9,7 @@ public struct JetpackEnd : IEvent
     public GameObject jetpackOwner;
 }
 
-public class Jetpack : NetworkBehaviour
+public class Jetpack : MonoBehaviour
 {
     EventBinding<JetpackStart> jetPackStartEventBinding;
     EventBinding<JetpackEnd> jetPackEndEventBinding;
