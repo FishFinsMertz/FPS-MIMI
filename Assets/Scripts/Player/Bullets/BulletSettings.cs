@@ -14,7 +14,6 @@ public class BulletSettings : ScriptableObject
         GameObject gameObject = Instantiate(prefab);
         Bullet bullet = gameObject.AddComponent<Bullet>();
         bullet.SetBulletSettings(this);
-        bullet.GetComponent<NetworkObject>().Spawn();
         return bullet;
     }
 
@@ -22,8 +21,10 @@ public class BulletSettings : ScriptableObject
     {
         bullet.gameObject.SetActive(true);
     }
-    public void OnRelease(Bullet bullet) 
+    public void OnRelease(Bullet bullet)
     {
+        NetworkObject netObj = bullet.GetComponent<NetworkObject>();
+        if (netObj.IsSpawned) netObj.Despawn();
         bullet.gameObject.SetActive(false);
     }
     public void OnDestroyPoolObject(Bullet bullet) => Destroy(bullet.gameObject);

@@ -12,6 +12,7 @@ public class Bullet : NetworkBehaviour
     {
         rb = GetComponent<Rigidbody>();
     }
+
     public void SetBulletSettings(BulletSettings bulletSettings) 
     {
         this.bulletSettings = bulletSettings;
@@ -22,7 +23,6 @@ public class Bullet : NetworkBehaviour
     {
         GunComponent gun = collider.GetComponentInParent<GunComponent>();
         if (gun && gun.GetTeam() == this.team) return;
-
         BulletFactory.ReturnToPool(this);
     }
 }

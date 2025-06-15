@@ -98,5 +98,6 @@ public class GunComponent : NetworkBehaviour
         Vector3 dir = targetDirection.normalized;
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
         rb.linearVelocity = dir * shootStrength;
+        if (!bullet.GetComponent<NetworkObject>().IsSpawned) bullet.GetComponent<NetworkObject>().Spawn();
     }
 }

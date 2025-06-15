@@ -12,8 +12,13 @@ public class PlayerController : NetworkBehaviour
     private Vector2 moveInput;
     private Vector2 lookInput;
 
-    void Awake()
+    public override void OnNetworkSpawn()
     {
+        if (IsLocalPlayer)
+        {
+            EventBus<LocalPlayerSpawned>.Raise(new LocalPlayerSpawned { playerController = this });
+        }
+        if (!IsOwner) return;
         playerInput = GetComponent<PlayerInput>();
         playerInput.actions.FindAction("Move").performed += OnMove;
         playerInput.actions.FindAction("Move").started += OnMove;
@@ -79,12 +84,4 @@ public class PlayerController : NetworkBehaviour
     public Vector2 GetMoveInput() => moveInput;
     public Vector2 GetLookInput() => lookInput;
     public float GetMoveSpeed() => moveSpeed;
-
-    public override void OnNetworkSpawn()
-    {
-        if (IsLocalPlayer)
-        {
-            EventBus<LocalPlayerSpawned>.Raise(new LocalPlayerSpawned { playerController = this });
-        }
-    }
 }

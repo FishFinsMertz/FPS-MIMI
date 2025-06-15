@@ -25,7 +25,14 @@ public class BulletFactory : NetworkBehaviour
     }
 
     public static Bullet Spawn(BulletSettings bulletSettings) => instance.GetPoolFor(bulletSettings).Get();
-    public static void ReturnToPool(Bullet bullet) => instance.GetPoolFor(bullet.GetBulletSettings())?.Release(bullet);
+    public static void ReturnToPool(Bullet bullet) 
+    {
+        if (bullet.gameObject.activeInHierarchy)
+        {
+            bullet.gameObject.SetActive(false);
+            instance.GetPoolFor(bullet.GetBulletSettings())?.Release(bullet);
+        }
+    }
 
     IObjectPool<Bullet> GetPoolFor(BulletSettings bullet) 
     {
