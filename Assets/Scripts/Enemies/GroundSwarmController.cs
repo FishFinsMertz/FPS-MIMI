@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class GroundSwarmController : NetworkBehaviour
@@ -54,7 +52,7 @@ public class GroundSwarmController : NetworkBehaviour
         {
             FindClosestTarget();
             yield return new WaitForSeconds(targetUpdateTime);
-            Debug.Log(GetCurrentTarget());
+            //Debug.Log(GetCurrentTarget());
         }
     }
     public GameObject GetCurrentTarget()
