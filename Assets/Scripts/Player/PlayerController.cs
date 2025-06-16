@@ -84,7 +84,11 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsLocalPlayer)
         {
-            EventBus<LocalPlayerSpawned>.Raise(new LocalPlayerSpawned { playerController = this });
+            EventBus<LocalPlayerSpawned>.Raise(new LocalPlayerSpawned
+            {
+                playerController = this,
+                playerGameObject = this.gameObject
+            });
         }
     }
 }

@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GroundSwarmController : NetworkBehaviour
 {
-    [Header("CHASE TARGETS")] // DELETE THIS ONCE A BETTER SYSTEM IS MADE WITH NETWORKING IN MIND
-    public List<GameObject> targets;
-
     [Header("CHASE STATS")]
     public float targetUpdateTime = 1f;
     public float moveSpeed;
@@ -15,11 +13,26 @@ public class GroundSwarmController : NetworkBehaviour
     // Private or Hidden variables
     private GroundSwarmState currentState;
     private GameObject currentTarget;
+    [HideInInspector] public List<GameObject> targets;
     [HideInInspector] public Rigidbody rb;
+    private EventBinding<LocalPlayerSpawned> playerSpawnEventBinding;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        // Get host as a target first
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (client.PlayerObject != null)
+            {
+                GameObject playerGO = client.PlayerObject.gameObject;
+                if (!targets.Contains(playerGO))
+                {
+                    targets.Add(playerGO);
+                }
+            }
+        }
         ChangeState(new GroundSwarmChaseState(this));
         StartCoroutine(UpdateTargetRoutine());
     }
@@ -31,7 +44,6 @@ public class GroundSwarmController : NetworkBehaviour
 
     void Update()
     {
-        //Debug.Log(currentState);
         currentState.Update();
     }
 
@@ -45,19 +57,14 @@ public class GroundSwarmController : NetworkBehaviour
     }
 
     /*                                            FOR FUTURE: ADD A BETTER ALGORITHM THAT CHOOSES THE TARGET                                          */
-
     private IEnumerator UpdateTargetRoutine()
     {
-        while (true)
-        {
-            FindClosestTarget();
-            yield return new WaitForSeconds(targetUpdateTime);
-            //Debug.Log(GetCurrentTarget());
-        }
+        FindClosestTarget();
+        Debug.Log(currentTarget.transform.position);
+        yield return new WaitForSeconds(targetUpdateTime);
     }
     public GameObject GetCurrentTarget()
     {
-        FindClosestTarget();
         return currentTarget;
     }
 
@@ -73,5 +80,22 @@ public class GroundSwarmController : NetworkBehaviour
                 temp = distanceToTarget;
             }
         }
+    }
+
+    // EVENTS
+    private void OnEnable()
+    {
+        playerSpawnEventBinding = new EventBinding<LocalPlayerSpawned>(AddTarget);
+        EventBus<LocalPlayerSpawned>.Register(playerSpawnEventBinding);
+    }
+
+    private void OnDisable()
+    {
+        EventBus<LocalPlayerSpawned>.Deregister(playerSpawnEventBinding);
+    }
+
+    private void AddTarget(LocalPlayerSpawned playerSpawnedEvent)
+    {
+        targets.Add(playerSpawnedEvent.playerGameObject.gameObject);
     }
 }
