@@ -25,7 +25,8 @@ public class EnemySpawner : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("Populating spawner");
+        //Debug.Log("Populating spawner");
+        if (!IsServer) return; 
         PopulateSpawner();
     }
 
@@ -33,20 +34,18 @@ public class EnemySpawner : NetworkBehaviour
     {
         for (int i = 0; i < poolSize; i++)
         {
+            // Instantiate but do NOT call Spawn() yet
             GameObject enemy = Instantiate(spawnedObjectPrefab);
             enemy.SetActive(false);
+
             enemyPool.Add(enemy);
             availableEnemies.Enqueue(enemy);
-
-            if (enemy.TryGetComponent<NetworkObject>(out var netObj))
-            {
-                netObj.Spawn(true); // Spawn and keep it disabled
-            }
         }
     }
 
     private void Update()
     {
+        if (!IsServer) return;
         if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log("Spawning enemy");
@@ -69,16 +68,42 @@ public class EnemySpawner : NetworkBehaviour
 
     private void SpawnFromPool()
     {
-        if (availableEnemies.Count > 0)
+        if (availableEnemies.Count == 0) return;
+
+        GameObject enemy = availableEnemies.Dequeue();
+        enemy.transform.position = GetSpawnPosition();
+
+        // Enable before spawning so clients see it immediately
+        enemy.SetActive(true);
+
+        if (enemy.TryGetComponent<NetworkObject>(out var netObj))
         {
-            GameObject enemy = availableEnemies.Dequeue();
-            enemy.transform.position = GetSpawnPosition(); // Implement this afterwards by making a function that calculates the spawn location
-            enemy.SetActive(true);
+            // Spawn the enemy on the network
+            if (!netObj.IsSpawned)
+                netObj.Spawn();
+
+            // Set targets list after spawning
+            if (enemy.TryGetComponent<GroundSwarmController>(out var controller))
+            {
+                var allPlayers = new List<GameObject>();
+                foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+                {
+                    if (client.PlayerObject != null)
+                        allPlayers.Add(client.PlayerObject.gameObject);
+                }
+                controller.targets = allPlayers;
+            }
         }
     }
 
     private void RecycleEnemy(GameObject enemy)
     {
+        if (enemy.TryGetComponent<NetworkObject>(out var netObj))
+        {
+            if (netObj.IsSpawned)
+                netObj.Despawn();  
+        }
+
         enemy.SetActive(false);
         availableEnemies.Enqueue(enemy);
     }

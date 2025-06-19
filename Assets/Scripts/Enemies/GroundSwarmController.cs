@@ -20,19 +20,6 @@ public class GroundSwarmController : NetworkBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-
-        // Get host as a target first
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-        {
-            if (client.PlayerObject != null)
-            {
-                GameObject playerGO = client.PlayerObject.gameObject;
-                if (!targets.Contains(playerGO))
-                {
-                    targets.Add(playerGO);
-                }
-            }
-        }
         ChangeState(new GroundSwarmChaseState(this));
         StartCoroutine(UpdateTargetRoutine());
     }
@@ -96,6 +83,7 @@ public class GroundSwarmController : NetworkBehaviour
 
     private void AddTarget(LocalPlayerSpawned playerSpawnedEvent)
     {
+        Debug.Log("New player joined");
         targets.Add(playerSpawnedEvent.playerGameObject.gameObject);
     }
 }
