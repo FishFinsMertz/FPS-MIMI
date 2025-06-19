@@ -46,9 +46,15 @@ public class GroundSwarmController : NetworkBehaviour
     /*                                            FOR FUTURE: ADD A BETTER ALGORITHM THAT CHOOSES THE TARGET                                          */
     private IEnumerator UpdateTargetRoutine()
     {
-        FindClosestTarget();
-        //Debug.Log(currentTarget.transform.position);
-        yield return new WaitForSeconds(targetUpdateTime);
+        while (true)
+        {
+            FindClosestTarget();
+
+            if (currentTarget != null)
+                Debug.Log("Target: " + currentTarget.name + " at " + currentTarget.transform.position);
+
+            yield return new WaitForSeconds(targetUpdateTime);
+        }
     }
     public GameObject GetCurrentTarget()
     {
@@ -83,7 +89,6 @@ public class GroundSwarmController : NetworkBehaviour
 
     private void AddTarget(LocalPlayerSpawned playerSpawnedEvent)
     {
-        Debug.Log("New player joined");
         targets.Add(playerSpawnedEvent.playerGameObject.gameObject);
     }
 }
