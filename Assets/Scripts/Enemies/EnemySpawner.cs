@@ -34,7 +34,6 @@ public class EnemySpawner : NetworkBehaviour
     {
         for (int i = 0; i < poolSize; i++)
         {
-            // Instantiate but do NOT call Spawn() yet
             GameObject enemy = Instantiate(spawnedObjectPrefab);
             enemy.SetActive(false);
 

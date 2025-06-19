@@ -26,11 +26,13 @@ public class GroundSwarmController : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (!IsServer) return; 
         currentState.FixedUpdate();
     }
 
     void Update()
     {
+        if (!IsServer) return; 
         currentState.Update();
     }
 
@@ -89,6 +91,10 @@ public class GroundSwarmController : NetworkBehaviour
 
     private void AddTarget(LocalPlayerSpawned playerSpawnedEvent)
     {
+        Debug.Log("player added to targets list" + playerSpawnedEvent.playerGameObject.gameObject.name);
         targets.Add(playerSpawnedEvent.playerGameObject.gameObject);
+        foreach (GameObject target in targets) {
+            Debug.Log(target.name);
+        }
     }
 }
