@@ -60,7 +60,7 @@ public class GroundSwarmController : NetworkBehaviour
     private IEnumerator UpdateTargetRoutine()
     {
         FindClosestTarget();
-        Debug.Log(currentTarget.transform.position);
+        //Debug.Log(currentTarget.transform.position);
         yield return new WaitForSeconds(targetUpdateTime);
     }
     public GameObject GetCurrentTarget()
