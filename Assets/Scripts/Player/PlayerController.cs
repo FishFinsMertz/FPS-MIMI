@@ -10,13 +10,24 @@ public class PlayerController : NetworkBehaviour
     private PlayerState currentState;
     private PlayerInput playerInput;
     private Vector2 moveInput;
+    private Vector2 lookInput;
 
-    void Awake()
+    public override void OnNetworkSpawn()
     {
+        if (IsLocalPlayer)
+        {
+            EventBus<LocalPlayerSpawned>.Raise(new LocalPlayerSpawned { playerController = this });
+        }
+        if (!IsOwner) return;
         playerInput = GetComponent<PlayerInput>();
         playerInput.actions.FindAction("Move").performed += OnMove;
         playerInput.actions.FindAction("Move").started += OnMove;
         playerInput.actions.FindAction("Move").canceled += OnMove;
+        playerInput.actions.FindAction("Look").performed += OnLook;
+        playerInput.actions.FindAction("Look").canceled += OnLook;
+        playerInput.actions.FindAction("Attack").performed += OnAttack;
+        playerInput.actions.FindAction("Jump").started += OnJetpackStart;
+        playerInput.actions.FindAction("Jump").canceled += OnJetpackEnd;
     }
 
     void Start()
@@ -50,6 +61,27 @@ public class PlayerController : NetworkBehaviour
         moveInput = ctx.ReadValue<Vector2>();
     }
 
+    public void OnLook(InputAction.CallbackContext ctx) 
+    {
+        lookInput = ctx.ReadValue<Vector2>();
+    }
+    public void OnAttack(InputAction.CallbackContext ctx) 
+    {
+        EventBus<ShootEvent>.Raise(new ShootEvent{
+            gunOwner = gameObject,
+            bulletOrigin = gameObject.transform.position,
+            targetDirection = Camera.main.transform.forward,
+        });
+    }
+    public void OnJetpackStart(InputAction.CallbackContext ctx) 
+    {
+        EventBus<JetpackStart>.Raise(new JetpackStart { jetpackOwner = gameObject });
+    }
+    public void OnJetpackEnd(InputAction.CallbackContext ctx)
+    {
+        EventBus<JetpackEnd>.Raise(new JetpackEnd { jetpackOwner = gameObject });
+    }
     public Vector2 GetMoveInput() => moveInput;
+    public Vector2 GetLookInput() => lookInput;
     public float GetMoveSpeed() => moveSpeed;
 }
