@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,10 +9,15 @@ public class PlayerController : NetworkBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 5f;
     
-    private PlayerState currentState;
+    [SerializeField, ReadOnly(true)] private PlayerState currentState;
+    public event Action<string> OnStateChanged;
     private PlayerInput playerInput;
     private Vector2 moveInput;
     private Vector2 lookInput;
+    private Vector3 moveDirection;
+
+    // -- object references
+    private Transform cameraTransform;
 
     public override void OnNetworkSpawn()
     {
@@ -30,6 +37,11 @@ public class PlayerController : NetworkBehaviour
         playerInput.actions.FindAction("Jump").canceled += OnJetpackEnd;
     }
 
+    void Awake()
+    {
+        cameraTransform = Camera.main.transform;
+    }
+
     void Start()
     {
         ChangeState(new PlayerWalkState(this)); //Temporary, make this idle
@@ -42,7 +54,6 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        Debug.Log(playerInput.currentControlScheme);
         //Debug.Log(currentState);  
         currentState.Update(); 
     }
@@ -54,6 +65,7 @@ public class PlayerController : NetworkBehaviour
 
         currentState = newState;
         currentState.Enter();
+        OnStateChanged?.Invoke(currentState.GetType().Name);
     }
 
     public void OnMove(InputAction.CallbackContext ctx)
@@ -64,6 +76,7 @@ public class PlayerController : NetworkBehaviour
     public void OnLook(InputAction.CallbackContext ctx) 
     {
         lookInput = ctx.ReadValue<Vector2>();
+        moveDirection = new Vector3(cameraTransform.forward.x, 0, cameraTransform.forward.z).normalized;
     }
     public void OnAttack(InputAction.CallbackContext ctx) 
     {
@@ -75,6 +88,7 @@ public class PlayerController : NetworkBehaviour
     }
     public void OnJetpackStart(InputAction.CallbackContext ctx) 
     {
+        // EventBruhs
         EventBus<JetpackStart>.Raise(new JetpackStart { jetpackOwner = gameObject });
     }
     public void OnJetpackEnd(InputAction.CallbackContext ctx)
@@ -83,5 +97,7 @@ public class PlayerController : NetworkBehaviour
     }
     public Vector2 GetMoveInput() => moveInput;
     public Vector2 GetLookInput() => lookInput;
+    public Vector3 GetMoveDirection() => moveDirection;
     public float GetMoveSpeed() => moveSpeed;
+    
 }

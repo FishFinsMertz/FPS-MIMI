@@ -17,5 +17,4 @@ public class QuestManager : NetworkBehaviour
         
     }
     
-    void 
 }
