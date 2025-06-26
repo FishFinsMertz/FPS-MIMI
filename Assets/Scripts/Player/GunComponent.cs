@@ -14,6 +14,11 @@ public struct ReloadEvent : IEvent
     public GameObject gunOwner;
 }
 
+public struct ShootAfterFXEvent : IEvent 
+{
+    public GameObject gunOwner;
+}
+
 public class GunComponent : NetworkBehaviour
 {
     EventBinding<ShootEvent> shootEventBinding;
@@ -55,7 +60,7 @@ public class GunComponent : NetworkBehaviour
         if (magCount != -1) magCount--; //-1 means no reload/Infinite mag size
 
         SpawnBulletServerRpc(shootEvent.bulletOrigin, shootEvent.targetDirection);
-
+        EventBus<ShootAfterFXEvent>.Raise(new ShootAfterFXEvent { gunOwner = gameObject });
         if (magCount == 0) Reload();
     }
 
