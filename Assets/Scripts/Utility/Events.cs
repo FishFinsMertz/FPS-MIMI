@@ -10,3 +10,9 @@ public struct LocalPlayerSpawned : IEvent
     public GameObject playerGameObject;
 }
 
+public struct PlayerSpawnedEvent : IEvent
+{
+    public PlayerController playerController;
+    public GameObject playerGameObject;
+}
+

@@ -14,7 +14,7 @@ public class GroundSwarmController : NetworkBehaviour
     private GameObject currentTarget;
     [HideInInspector] public List<GameObject> targets;
     [HideInInspector] public Rigidbody rb;
-    private EventBinding<LocalPlayerSpawned> playerSpawnEventBinding;
+    private EventBinding<PlayerSpawnedEvent> playerSpawnEventBinding;
 
     void Start()
     {
@@ -52,7 +52,7 @@ public class GroundSwarmController : NetworkBehaviour
             FindClosestTarget();
 
             if (currentTarget != null)
-                Debug.Log("Target: " + currentTarget.name + " at " + currentTarget.transform.position);
+                //Debug.Log("Target: " + currentTarget.name + " at " + currentTarget.transform.position);
 
             yield return new WaitForSeconds(targetUpdateTime);
         }
@@ -79,16 +79,17 @@ public class GroundSwarmController : NetworkBehaviour
     // EVENTS
     private void OnEnable()
     {
-        playerSpawnEventBinding = new EventBinding<LocalPlayerSpawned>(AddTarget);
-        EventBus<LocalPlayerSpawned>.Register(playerSpawnEventBinding);
+        Debug.Log("Binding event");
+        playerSpawnEventBinding = new EventBinding<PlayerSpawnedEvent>(AddTarget);
+        EventBus<PlayerSpawnedEvent>.Register(playerSpawnEventBinding);
     }
 
     private void OnDisable()
     {
-        EventBus<LocalPlayerSpawned>.Deregister(playerSpawnEventBinding);
+        EventBus<PlayerSpawnedEvent>.Deregister(playerSpawnEventBinding);
     }
 
-    private void AddTarget(LocalPlayerSpawned playerSpawnedEvent)
+    private void AddTarget(PlayerSpawnedEvent playerSpawnedEvent)
     {
         Debug.Log("player added to targets list" + playerSpawnedEvent.playerGameObject.gameObject.name);
         targets.Add(playerSpawnedEvent.playerGameObject.gameObject);

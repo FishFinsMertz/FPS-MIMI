@@ -78,7 +78,6 @@ public class FirstPersonCamera : MonoBehaviour
     void Recoil(ShootAfterFXEvent shootAfterFXEvent) 
     {
         if (shootAfterFXEvent.gunOwner != playerController.gameObject) return;
-        Debug.Log("Should Be Shooting");
 
         lookOffsetInitial = lookOffsetCurrent;
         lookOffsetTarget = lookOffsetInitial + Vector3.left * recoilStrength;
@@ -101,7 +100,6 @@ public class FirstPersonCamera : MonoBehaviour
                     lookOffsetTarget = Vector3.zero;
                     lookOffsetInitial = lookOffsetCurrent;
                     returnTime = Mathf.Log((lookOffsetInitial - lookOffsetTarget).magnitude * recoilReturnTimeMultiplier + 1);
-                    Debug.Log(returnTime);
                     lookOffsetTimer = 0;
                 }
             }

@@ -29,6 +29,11 @@ public class PlayerController : NetworkBehaviour
                 playerGameObject = this.gameObject
             });
         }
+        EventBus<PlayerSpawnedEvent>.Raise(new PlayerSpawnedEvent
+        {
+            playerController = this,
+            playerGameObject = this.gameObject
+        });
         if (!IsOwner) return;
         playerInput = GetComponent<PlayerInput>();
         playerInput.actions.FindAction("Move").performed += OnMove;
