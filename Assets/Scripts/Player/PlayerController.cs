@@ -99,5 +99,16 @@ public class PlayerController : NetworkBehaviour
     public Vector2 GetLookInput() => lookInput;
     public Vector3 GetMoveDirection() => moveDirection;
     public float GetMoveSpeed() => moveSpeed;
-    
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsLocalPlayer)
+        {
+            EventBus<LocalPlayerSpawned>.Raise(new LocalPlayerSpawned
+            {
+                playerController = this,
+                playerGameObject = this.gameObject
+            });
+        }
+    }
 }

@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class GroundSwarmController : NetworkBehaviour
 {
-    [Header("CHASE TARGETS")] // DELETE THIS ONCE A BETTER SYSTEM IS MADE WITH NETWORKING IN MIND
-    public List<GameObject> targets;
-
     [Header("CHASE STATS")]
     public float targetUpdateTime = 1f;
     public float moveSpeed;
@@ -15,7 +12,9 @@ public class GroundSwarmController : NetworkBehaviour
     // Private or Hidden variables
     private GroundSwarmState currentState;
     private GameObject currentTarget;
+    [HideInInspector] public List<GameObject> targets;
     [HideInInspector] public Rigidbody rb;
+    private EventBinding<LocalPlayerSpawned> playerSpawnEventBinding;
 
     void Start()
     {
@@ -26,12 +25,13 @@ public class GroundSwarmController : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (!IsServer) return; 
         currentState.FixedUpdate();
     }
 
     void Update()
     {
-        //Debug.Log(currentState);
+        if (!IsServer) return; 
         currentState.Update();
     }
 
@@ -45,19 +45,20 @@ public class GroundSwarmController : NetworkBehaviour
     }
 
     /*                                            FOR FUTURE: ADD A BETTER ALGORITHM THAT CHOOSES THE TARGET                                          */
-
     private IEnumerator UpdateTargetRoutine()
     {
         while (true)
         {
             FindClosestTarget();
+
+            if (currentTarget != null)
+                Debug.Log("Target: " + currentTarget.name + " at " + currentTarget.transform.position);
+
             yield return new WaitForSeconds(targetUpdateTime);
-            Debug.Log(GetCurrentTarget());
         }
     }
     public GameObject GetCurrentTarget()
     {
-        FindClosestTarget();
         return currentTarget;
     }
 
@@ -72,6 +73,27 @@ public class GroundSwarmController : NetworkBehaviour
                 currentTarget = target;
                 temp = distanceToTarget;
             }
+        }
+    }
+
+    // EVENTS
+    private void OnEnable()
+    {
+        playerSpawnEventBinding = new EventBinding<LocalPlayerSpawned>(AddTarget);
+        EventBus<LocalPlayerSpawned>.Register(playerSpawnEventBinding);
+    }
+
+    private void OnDisable()
+    {
+        EventBus<LocalPlayerSpawned>.Deregister(playerSpawnEventBinding);
+    }
+
+    private void AddTarget(LocalPlayerSpawned playerSpawnedEvent)
+    {
+        Debug.Log("player added to targets list" + playerSpawnedEvent.playerGameObject.gameObject.name);
+        targets.Add(playerSpawnedEvent.playerGameObject.gameObject);
+        foreach (GameObject target in targets) {
+            Debug.Log(target.name);
         }
     }
 }
