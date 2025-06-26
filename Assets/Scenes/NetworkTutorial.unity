@@ -1707,6 +1707,9 @@ MonoBehaviour:
   cameraPlayerOffset: {x: 0, y: 1, z: 0}
   cameraXMinRotation: -90
   cameraXMaxRotation: 90
+  recoilTime: 0.1
+  recoilReturnTimeMultiplier: 1
+  recoilStrength: 3
   cameraSensitivity: 1
 --- !u!1 &1444038595
 GameObject:

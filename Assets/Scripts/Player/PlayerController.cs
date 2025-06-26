@@ -82,7 +82,7 @@ public class PlayerController : NetworkBehaviour
     {
         EventBus<ShootEvent>.Raise(new ShootEvent{
             gunOwner = gameObject,
-            bulletOrigin = gameObject.transform.position,
+            bulletOrigin = Camera.main.transform.position,
             targetDirection = Camera.main.transform.forward,
         });
     }
