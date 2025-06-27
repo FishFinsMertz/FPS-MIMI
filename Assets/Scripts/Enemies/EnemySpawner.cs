@@ -82,7 +82,7 @@ public class EnemySpawner : NetworkBehaviour
                 netObj.Spawn();
 
             // Set targets list after spawning
-            if (enemy.TryGetComponent<GroundSwarmController>(out var controller))
+            if (enemy.TryGetComponent<EnemyControllerBase>(out var controller))
             {
                 var allPlayers = new List<GameObject>();
                 foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
@@ -91,6 +91,7 @@ public class EnemySpawner : NetworkBehaviour
                         allPlayers.Add(client.PlayerObject.gameObject);
                 }
                 controller.targets = allPlayers;
+                controller.spawner = this;
             }
         }
     }

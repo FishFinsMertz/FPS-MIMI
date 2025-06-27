@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class GroundSwarmController : NetworkBehaviour
+public class GroundSwarmController : EnemyControllerBase
 {
     [Header("CHASE STATS")]
     public float targetUpdateTime = 1f;
@@ -12,8 +12,6 @@ public class GroundSwarmController : NetworkBehaviour
     // Private or Hidden variables
     private GroundSwarmState currentState;
     private GameObject currentTarget;
-    [HideInInspector] public List<GameObject> targets;
-    [HideInInspector] public Rigidbody rb;
     private EventBinding<PlayerSpawnedEvent> playerSpawnEventBinding;
 
     void Start()
@@ -31,8 +29,10 @@ public class GroundSwarmController : NetworkBehaviour
 
     void Update()
     {
-        if (!IsServer) return; 
+        if (!IsServer) return;
         currentState.Update();
+
+        //Debug.Log(spawner);
     }
 
     public void ChangeState(GroundSwarmState newState)
