@@ -12,7 +12,6 @@ public class GroundSwarmController : EnemyControllerBase
     // Private or Hidden variables
     private GroundSwarmState currentState;
     private GameObject currentTarget;
-    private EventBinding<PlayerSpawnedEvent> playerSpawnEventBinding;
 
     void Start()
     {
@@ -23,7 +22,7 @@ public class GroundSwarmController : EnemyControllerBase
 
     void FixedUpdate()
     {
-        if (!IsServer) return; 
+        if (!IsServer) return;
         currentState.FixedUpdate();
     }
 
@@ -54,7 +53,7 @@ public class GroundSwarmController : EnemyControllerBase
             if (currentTarget != null)
                 //Debug.Log("Target: " + currentTarget.name + " at " + currentTarget.transform.position);
 
-            yield return new WaitForSeconds(targetUpdateTime);
+                yield return new WaitForSeconds(targetUpdateTime);
         }
     }
     public GameObject GetCurrentTarget()
@@ -76,25 +75,8 @@ public class GroundSwarmController : EnemyControllerBase
         }
     }
 
-    // EVENTS
-    private void OnEnable()
+    public override void OnDeath()
     {
-        Debug.Log("Binding event");
-        playerSpawnEventBinding = new EventBinding<PlayerSpawnedEvent>(AddTarget);
-        EventBus<PlayerSpawnedEvent>.Register(playerSpawnEventBinding);
-    }
-
-    private void OnDisable()
-    {
-        EventBus<PlayerSpawnedEvent>.Deregister(playerSpawnEventBinding);
-    }
-
-    private void AddTarget(PlayerSpawnedEvent playerSpawnedEvent)
-    {
-        Debug.Log("player added to targets list" + playerSpawnedEvent.playerGameObject.gameObject.name);
-        targets.Add(playerSpawnedEvent.playerGameObject.gameObject);
-        foreach (GameObject target in targets) {
-            Debug.Log(target.name);
-        }
+        base.OnDeath();
     }
 }

@@ -3,6 +3,8 @@ using UnityEngine.Events;
 
 public class HealthComponent : MonoBehaviour
 {
+    [Header("Owner Controller Script")]
+
     [Header("Health Stats")]
     public float maxHealth = 100f;
     private float currentHealth;
@@ -13,6 +15,14 @@ public class HealthComponent : MonoBehaviour
     private void Awake()
     {
         currentHealth = maxHealth;
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            TakeDamage(50);
+        }
     }
 
     public void TakeDamage(float amount)
