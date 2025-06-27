@@ -2,6 +2,9 @@ using NUnit.Framework;
 using Unity.Netcode;
 using UnityEngine;
 
+interface IShootable {
+    public void Shoot(Vector3 hitPosition, Vector3 velocity, float mass);
+}
 public class Bullet : NetworkBehaviour
 {
     private BulletSettings bulletSettings;
@@ -23,6 +26,10 @@ public class Bullet : NetworkBehaviour
     {
         GunComponent gun = collider.GetComponentInParent<GunComponent>();
         if (gun && gun.GetTeam() == this.team) return;
+        if (collider.TryGetComponent(out IShootable shootableObj)) 
+        {
+            shootableObj.Shoot(transform.position, rb.linearVelocity, 1);
+        }
         BulletFactory.ReturnToPool(this);
     }
 }
