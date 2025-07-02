@@ -52,7 +52,7 @@ public class GroundSwarmController : NetworkBehaviour
             FindClosestTarget();
 
             if (currentTarget != null)
-                //Debug.Log("Target: " + currentTarget.name + " at " + currentTarget.transform.position);
+                Debug.Log("Target: " + currentTarget.name + " at " + currentTarget.transform.position);
 
             yield return new WaitForSeconds(targetUpdateTime);
         }
