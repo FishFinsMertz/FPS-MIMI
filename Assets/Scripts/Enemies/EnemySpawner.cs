@@ -101,7 +101,7 @@ public class EnemySpawner : NetworkBehaviour
         if (enemy.TryGetComponent<NetworkObject>(out var netObj))
         {
             if (netObj.IsSpawned)
-                netObj.Despawn();  
+                netObj.Despawn(false);  
         }
 
         enemy.SetActive(false);
