@@ -15,12 +15,27 @@ public abstract class EnemyControllerBase : NetworkBehaviour
 
     // Other Hidden Variables
     private float targetUpdateTime = 1f;
-    protected GroundSwarmState currentState;
+    protected BaseEnemyState currentState;
     protected GameObject currentTarget;
 
     protected virtual void Start()
     {
         StartCoroutine(UpdateTargetRoutine());
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void FixedUpdate()
+    {
+        if (!IsServer) return;
+        currentState.FixedUpdate();
+    }
+
+    void Update()
+    {
+        if (!IsServer) return;
+        currentState.Update();
+
+        //Debug.Log(spawner);
     }
 
     // EVENTS
@@ -80,7 +95,7 @@ public abstract class EnemyControllerBase : NetworkBehaviour
     {
         while (true)
         {
-            FindClosestTarget();
+            FindTarget();
 
             if (currentTarget != null)
             {
@@ -95,7 +110,7 @@ public abstract class EnemyControllerBase : NetworkBehaviour
         return currentTarget;
     }
 
-    protected virtual void FindClosestTarget()
+    protected virtual void FindTarget()
     {
         float temp = Mathf.Infinity;
         foreach (GameObject target in targets)
@@ -109,7 +124,16 @@ public abstract class EnemyControllerBase : NetworkBehaviour
         }
     }
 
-    public virtual void OnDeath()
+    protected virtual void ChangeState(BaseEnemyState newState)
+    {
+        if (currentState != null)
+            currentState.Exit();
+
+        currentState = newState;
+        currentState.Enter();
+    }
+
+    protected virtual void OnDeath()
     {
         // Default behavior: disable the object
         Debug.Log("Rip Bozo");

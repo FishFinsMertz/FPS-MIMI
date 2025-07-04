@@ -11,34 +11,10 @@ public class GroundSwarmController : EnemyControllerBase
     protected override void Start()
     {
         base.Start();
-        rb = GetComponent<Rigidbody>();
         ChangeState(new GroundSwarmChaseState(this));
     }
 
-    void FixedUpdate()
-    {
-        if (!IsServer) return;
-        currentState.FixedUpdate();
-    }
-
-    void Update()
-    {
-        if (!IsServer) return;
-        currentState.Update();
-
-        //Debug.Log(spawner);
-    }
-
-    public void ChangeState(GroundSwarmState newState)
-    {
-        if (currentState != null)
-            currentState.Exit();
-
-        currentState = newState;
-        currentState.Enter();
-    }
-
-    public override void OnDeath()
+    protected override void OnDeath()
     {
         base.OnDeath();
     }
