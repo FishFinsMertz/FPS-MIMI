@@ -96,7 +96,7 @@ public class EnemySpawner : NetworkBehaviour
         }
     }
 
-    private void RecycleEnemy(GameObject enemy)
+    public void RecycleEnemy(GameObject enemy)
     {
         if (enemy.TryGetComponent<NetworkObject>(out var netObj))
         {

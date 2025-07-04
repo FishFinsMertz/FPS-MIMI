@@ -16,6 +16,6 @@ public class GroundSwarmController : EnemyControllerBase
 
     protected override void OnDeath()
     {
-        base.OnDeath();
+        spawner.RecycleEnemy(this.gameObject);
     }
 }
