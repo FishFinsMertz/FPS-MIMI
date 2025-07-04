@@ -6,18 +6,13 @@ using UnityEngine;
 public class GroundSwarmController : EnemyControllerBase
 {
     [Header("CHASE STATS")]
-    public float targetUpdateTime = 1f;
     public float moveSpeed;
 
-    // Private or Hidden variables
-    private GroundSwarmState currentState;
-    private GameObject currentTarget;
-
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         rb = GetComponent<Rigidbody>();
         ChangeState(new GroundSwarmChaseState(this));
-        StartCoroutine(UpdateTargetRoutine());
     }
 
     void FixedUpdate()
@@ -41,40 +36,6 @@ public class GroundSwarmController : EnemyControllerBase
 
         currentState = newState;
         currentState.Enter();
-    }
-
-    /*                                            FOR FUTURE: ADD A BETTER ALGORITHM THAT CHOOSES THE TARGET                                          */
-    private IEnumerator UpdateTargetRoutine()
-    {
-        while (true)
-        {
-            FindClosestTarget();
-
-            if (currentTarget != null)
-            {
-                //Debug.Log("Target: " + currentTarget.name + " at " + currentTarget.transform.position);
-            }
-            yield return new WaitForSeconds(targetUpdateTime);
-        }
-    }
-    
-    public GameObject GetCurrentTarget()
-    {
-        return currentTarget;
-    }
-
-    private void FindClosestTarget()
-    {
-        float temp = Mathf.Infinity;
-        foreach (GameObject target in targets)
-        {
-            float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
-            if (distanceToTarget <= temp)
-            {
-                currentTarget = target;
-                temp = distanceToTarget;
-            }
-        }
     }
 
     public override void OnDeath()

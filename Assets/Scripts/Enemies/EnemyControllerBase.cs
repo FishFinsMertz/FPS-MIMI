@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using System.Collections.Generic;
+using System.Collections;
 
 public abstract class EnemyControllerBase : NetworkBehaviour
 {
@@ -8,10 +9,21 @@ public abstract class EnemyControllerBase : NetworkBehaviour
     [HideInInspector] public List<GameObject> targets;
     [HideInInspector] public EnemySpawner spawner;
     
+    // Events
     private EventBinding<PlayerSpawnedEvent> playerSpawnEventBinding;
     private EventBinding<PlayerLeftEvent> playerLeftEventBinding;
-    
-        // EVENTS
+
+    // Other Hidden Variables
+    private float targetUpdateTime = 1f;
+    protected GroundSwarmState currentState;
+    protected GameObject currentTarget;
+
+    protected virtual void Start()
+    {
+        StartCoroutine(UpdateTargetRoutine());
+    }
+
+    // EVENTS
     private void OnEnable()
     {
         //Debug.Log("Binding event");
@@ -60,6 +72,40 @@ public abstract class EnemyControllerBase : NetworkBehaviour
         {
             targets.Remove(playerLeftEvent.playerGameObject.gameObject);
             Debug.Log("Removed target: " + playerLeftEvent.playerGameObject.gameObject.name);
+        }
+    }
+
+        /*                                            FOR FUTURE: ADD A BETTER ALGORITHM THAT CHOOSES THE TARGET                                          */
+    public IEnumerator UpdateTargetRoutine()
+    {
+        while (true)
+        {
+            FindClosestTarget();
+
+            if (currentTarget != null)
+            {
+                //Debug.Log("Target: " + currentTarget.name + " at " + currentTarget.transform.position);
+            }
+            yield return new WaitForSeconds(targetUpdateTime);
+        }
+    }
+
+    public virtual GameObject GetCurrentTarget()
+    {
+        return currentTarget;
+    }
+
+    protected virtual void FindClosestTarget()
+    {
+        float temp = Mathf.Infinity;
+        foreach (GameObject target in targets)
+        {
+            float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+            if (distanceToTarget <= temp)
+            {
+                currentTarget = target;
+                temp = distanceToTarget;
+            }
         }
     }
 
