@@ -5,8 +5,13 @@ using UnityEngine;
 
 public class GroundSwarmController : EnemyControllerBase
 {
-    [Header("CHASE STATS")]
+    [Header("Movement & Detection")]
     public float moveSpeed;
+    public float slashRange;
+
+    [Header("Attack Stats")]
+    public float slashDuration;
+    public float slashDmg;
 
     protected override void Start()
     {

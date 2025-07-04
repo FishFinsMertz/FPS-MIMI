@@ -38,7 +38,7 @@ public abstract class EnemyControllerBase : NetworkBehaviour
         //Debug.Log(spawner);
     }
 
-    // EVENTS
+                                                                // EVENTS
     private void OnEnable()
     {
         //Debug.Log("Binding event");
@@ -69,6 +69,8 @@ public abstract class EnemyControllerBase : NetworkBehaviour
             health.onDeath.RemoveListener(OnDeath);
         }
     }
+
+                                                                    // TARGET SELECTION
 
     private void AddTarget(PlayerSpawnedEvent playerSpawnedEvent)
     {
@@ -115,7 +117,7 @@ public abstract class EnemyControllerBase : NetworkBehaviour
         float temp = Mathf.Infinity;
         foreach (GameObject target in targets)
         {
-            float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+            float distanceToTarget = DistanceFromTarget(target);
             if (distanceToTarget <= temp)
             {
                 currentTarget = target;
@@ -123,8 +125,15 @@ public abstract class EnemyControllerBase : NetworkBehaviour
             }
         }
     }
+                                                                    // IMPORTANT INFORMATION
+    public float DistanceFromTarget(GameObject target)
+    {
+        if (target == null) return Mathf.Infinity;
+        return Vector3.Distance(transform.position, target.transform.position);
+    }
+                                                                    // MISC
 
-    protected virtual void ChangeState(BaseEnemyState newState)
+    public virtual void ChangeState(BaseEnemyState newState)
     {
         if (currentState != null)
             currentState.Exit();

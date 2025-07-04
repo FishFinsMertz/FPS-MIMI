@@ -152,8 +152,10 @@ MonoBehaviour:
   rb: {fileID: 0}
   targets: []
   spawner: {fileID: 0}
-  targetUpdateTime: 1
-  moveSpeed: 10
+  moveSpeed: 7
+  slashRange: 2
+  slashDuration: 2
+  slashDmg: 10
 --- !u!114 &-25533389120098141
 MonoBehaviour:
   m_ObjectHideFlags: 0
