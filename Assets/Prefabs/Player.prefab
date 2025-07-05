@@ -124,9 +124,9 @@ GameObject:
   - component: {fileID: 6555148833234361477}
   - component: {fileID: 8026605711414454929}
   - component: {fileID: 2268547512162069201}
-  - component: {fileID: -359759829718584602}
   - component: {fileID: -5888434840622216812}
   - component: {fileID: 5812579976505501038}
+  - component: {fileID: 2147783167051033923}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -235,6 +235,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 5
+  components:
+  - {fileID: 2268547512162069201}
+  - {fileID: 2147783167051033923}
 --- !u!114 &8026605711414454929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,23 +371,6 @@ MonoBehaviour:
   team: 0
   ammoCount: -1
   magCount: 6
---- !u!114 &-359759829718584602
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8326366632986290431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fff30d75409e6a841af4facd0c40ab02, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fuelSize: 10
-  jetpackStrength: 30
-  jetpackMaxSpeed: 10
-  isJetpacking: 0
-  curFuel: 0
 --- !u!54 &-5888434840622216812
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -429,3 +415,20 @@ MonoBehaviour:
   UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
+--- !u!114 &2147783167051033923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8326366632986290431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70392113d706cf4a91d5187be3d9999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fuelSize: 10
+  jetpackStrength: 100
+  jetpackMaxSpeed: 10
+  isJetpacking: 0
+  curFuel: 0

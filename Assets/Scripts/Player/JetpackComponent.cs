@@ -9,7 +9,7 @@ public struct JetpackEnd : IEvent
     public GameObject jetpackOwner;
 }
 
-public class Jetpack : MonoBehaviour
+public class JetpackComponent : MonoBehaviour, IComponent
 {
     EventBinding<JetpackStart> jetPackStartEventBinding;
     EventBinding<JetpackEnd> jetPackEndEventBinding;
@@ -78,6 +78,7 @@ public class Jetpack : MonoBehaviour
     public void Initialize(LocalEventBusManager LEBM) 
     {
         localEventBusManager = LEBM;
+        Debug.Log("JetPack initialized");
         localEventBusManager.GetLocalEventBus<JetpackStart>().Register(jetPackStartEventBinding, true);
         localEventBusManager.GetLocalEventBus<JetpackEnd>().Register(jetPackEndEventBinding, true);
     }

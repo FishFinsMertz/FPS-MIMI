@@ -19,7 +19,7 @@ public struct ShootAfterFXEvent : IEvent
     public GameObject gunOwner;
 }
 
-public class GunComponent : NetworkBehaviour
+public class GunComponent : NetworkBehaviour, IComponent
 {
     EventBinding<ShootEvent> shootEventBinding;
     EventBinding<ReloadEvent> reloadEventBinding;
@@ -40,7 +40,6 @@ public class GunComponent : NetworkBehaviour
     private LocalEventBusManager localEventBusManager;
     private void OnEnable()
     {
-
         shootEventBinding = new EventBinding<ShootEvent>(Shoot);
         reloadEventBinding = new EventBinding<ReloadEvent>(ReloadEventHandler);
         if (localEventBusManager != null)

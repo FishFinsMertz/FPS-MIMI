@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,6 +20,7 @@ public class PlayerController : NetworkBehaviour
     // -- object references
     private Transform cameraTransform;
     public LocalEventBusManager localEventBusManager  { get; private set; } = new LocalEventBusManager();
+    [SerializeReference] List<MonoBehaviour> components = new List<MonoBehaviour>();
 
     public override void OnNetworkSpawn()
     {
@@ -30,6 +32,13 @@ public class PlayerController : NetworkBehaviour
                 playerController = this,
                 playerGameObject = this.gameObject
             });
+            foreach (var component in components)
+            {
+                if (component is IComponent iComponent)
+                {
+                    iComponent.Initialize(localEventBusManager);
+                }
+            }
         }
 
         EventBus<PlayerSpawnedEvent>.Raise(new PlayerSpawnedEvent
@@ -107,16 +116,16 @@ public class PlayerController : NetworkBehaviour
             gunOwner = gameObject,
             bulletOrigin = Camera.main.transform.position,
             targetDirection = Camera.main.transform.forward,
-        });
+        }, true);
     }
     public void OnJetpackStart(InputAction.CallbackContext ctx) 
     {
         // EventBruhs
-        localEventBusManager.GetLocalEventBus<JetpackStart>().Raise(new JetpackStart { jetpackOwner = gameObject });
+        localEventBusManager.GetLocalEventBus<JetpackStart>().Raise(new JetpackStart { jetpackOwner = gameObject }, true);
     }
     public void OnJetpackEnd(InputAction.CallbackContext ctx)
     {
-        localEventBusManager.GetLocalEventBus<JetpackEnd>().Raise(new JetpackEnd { jetpackOwner = gameObject });
+        localEventBusManager.GetLocalEventBus<JetpackEnd>().Raise(new JetpackEnd { jetpackOwner = gameObject }, true);
     }
     public Vector2 GetMoveInput() => moveInput;
     public Vector2 GetLookInput() => lookInput;
