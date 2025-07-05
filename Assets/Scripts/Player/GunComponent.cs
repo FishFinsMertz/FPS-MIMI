@@ -4,20 +4,13 @@ using UnityEngine;
 
 public struct ShootEvent : IEvent 
 {
-    public GameObject gunOwner;
     public Vector3 bulletOrigin;
     public Vector3 targetDirection;
 }
 
-public struct ReloadEvent : IEvent 
-{
-    public GameObject gunOwner;
-}
+public struct ReloadEvent : IEvent {}
 
-public struct ShootAfterFXEvent : IEvent 
-{
-    public GameObject gunOwner;
-}
+public struct ShootAfterFXEvent : IEvent {}
 
 public class GunComponent : NetworkBehaviour, IComponent
 {
@@ -59,13 +52,12 @@ public class GunComponent : NetworkBehaviour, IComponent
 
     void Shoot(ShootEvent shootEvent) 
     {
-        if (shootEvent.gunOwner != gameObject) return;
         if (magCount == 0) return;
 
         if (magCount != -1) magCount--; //-1 means no reload/Infinite mag size
 
         SpawnBulletServerRpc(shootEvent.bulletOrigin, shootEvent.targetDirection);
-        EventBus<ShootAfterFXEvent>.Raise(new ShootAfterFXEvent { gunOwner = gameObject });
+        EventBus<ShootAfterFXEvent>.Raise(new ShootAfterFXEvent {});
         if (magCount == 0) Reload();
     }
 
@@ -90,7 +82,6 @@ public class GunComponent : NetworkBehaviour, IComponent
 
     void ReloadEventHandler(ReloadEvent reloadEvent) 
     {
-        if (reloadEvent.gunOwner != gameObject) return;
         Reload();
     }
 

@@ -1,13 +1,7 @@
 using UnityEngine;
 
-public struct JetpackStart : IEvent 
-{
-    public GameObject jetpackOwner;
-}
-public struct JetpackEnd : IEvent
-{
-    public GameObject jetpackOwner;
-}
+public struct JetpackStart : IEvent {}
+public struct JetpackEnd : IEvent{}
 
 public class JetpackComponent : MonoBehaviour, IComponent
 {
@@ -66,12 +60,10 @@ public class JetpackComponent : MonoBehaviour, IComponent
 
     void handleJetPackStartEvent(JetpackStart e) 
     {
-        if (e.jetpackOwner != gameObject) return;
         isJetpacking = true;
     }
     void handleJetPackEndEvent(JetpackEnd e) 
     {
-        if (e.jetpackOwner != gameObject) return;
         isJetpacking = false;
     }
 

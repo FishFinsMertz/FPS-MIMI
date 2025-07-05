@@ -81,8 +81,6 @@ public class FirstPersonCamera : MonoBehaviour
 
     void Recoil(ShootAfterFXEvent shootAfterFXEvent) 
     {
-        if (shootAfterFXEvent.gunOwner != playerController.gameObject) return;
-
         lookOffsetInitial = lookOffsetCurrent;
         lookOffsetTarget = lookOffsetInitial + Vector3.left * recoilStrength;
         lookOffsetTimer = 0;
