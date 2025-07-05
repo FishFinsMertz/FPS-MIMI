@@ -18,6 +18,7 @@ public class PlayerController : NetworkBehaviour
 
     // -- object references
     private Transform cameraTransform;
+    public LocalEventBusManager localEventBusManager  { get; private set; } = new LocalEventBusManager();
 
     public override void OnNetworkSpawn()
     {
@@ -102,7 +103,7 @@ public class PlayerController : NetworkBehaviour
     }
     public void OnAttack(InputAction.CallbackContext ctx) 
     {
-        EventBus<ShootEvent>.Raise(new ShootEvent{
+        localEventBusManager.GetLocalEventBus<ShootEvent>().Raise(new ShootEvent{
             gunOwner = gameObject,
             bulletOrigin = Camera.main.transform.position,
             targetDirection = Camera.main.transform.forward,
@@ -111,11 +112,11 @@ public class PlayerController : NetworkBehaviour
     public void OnJetpackStart(InputAction.CallbackContext ctx) 
     {
         // EventBruhs
-        EventBus<JetpackStart>.Raise(new JetpackStart { jetpackOwner = gameObject });
+        localEventBusManager.GetLocalEventBus<JetpackStart>().Raise(new JetpackStart { jetpackOwner = gameObject });
     }
     public void OnJetpackEnd(InputAction.CallbackContext ctx)
     {
-        EventBus<JetpackEnd>.Raise(new JetpackEnd { jetpackOwner = gameObject });
+        localEventBusManager.GetLocalEventBus<JetpackEnd>().Raise(new JetpackEnd { jetpackOwner = gameObject });
     }
     public Vector2 GetMoveInput() => moveInput;
     public Vector2 GetLookInput() => lookInput;

@@ -23,19 +23,25 @@ public class Jetpack : MonoBehaviour
     [SerializeField] bool isJetpacking;
     [SerializeField] float curFuel;
 
+    private LocalEventBusManager localEventBusManager;
+
     private void OnEnable()
     {
         jetPackStartEventBinding = new EventBinding<JetpackStart>(handleJetPackStartEvent);
-        EventBus<JetpackStart>.Register(jetPackStartEventBinding);
-
         jetPackEndEventBinding = new EventBinding<JetpackEnd>(handleJetPackEndEvent);
-        EventBus<JetpackEnd>.Register(jetPackEndEventBinding);
+        if (localEventBusManager != null)
+        {
+            Initialize(localEventBusManager);
+        }
     }
 
     private void OnDisable()
     {
-        EventBus<JetpackStart>.Deregister(jetPackStartEventBinding);
-        EventBus<JetpackEnd>.Deregister(jetPackEndEventBinding);
+        if (localEventBusManager != null)
+        {
+            localEventBusManager.GetLocalEventBus<JetpackStart>().Deregister(jetPackStartEventBinding);
+            localEventBusManager.GetLocalEventBus<JetpackEnd>().Deregister(jetPackEndEventBinding);
+        }
     }
 
     void FixedUpdate()
@@ -67,5 +73,12 @@ public class Jetpack : MonoBehaviour
     {
         if (e.jetpackOwner != gameObject) return;
         isJetpacking = false;
+    }
+
+    public void Initialize(LocalEventBusManager LEBM) 
+    {
+        localEventBusManager = LEBM;
+        localEventBusManager.GetLocalEventBus<JetpackStart>().Register(jetPackStartEventBinding, true);
+        localEventBusManager.GetLocalEventBus<JetpackEnd>().Register(jetPackEndEventBinding, true);
     }
 }

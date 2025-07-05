@@ -28,6 +28,7 @@ public class FirstPersonCamera : MonoBehaviour
 
     private EventBinding<LocalPlayerSpawned> playerSpawnEventBinding;
     private EventBinding<ShootAfterFXEvent> shootAfterFXEventBinding;
+    private LocalEventBusManager localEventBusManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -41,13 +42,13 @@ public class FirstPersonCamera : MonoBehaviour
         EventBus<LocalPlayerSpawned>.Register(playerSpawnEventBinding);
 
         shootAfterFXEventBinding = new EventBinding<ShootAfterFXEvent>(Recoil);
-        EventBus<ShootAfterFXEvent>.Register(shootAfterFXEventBinding);
+        if (localEventBusManager != null) localEventBusManager.GetLocalEventBus<ShootAfterFXEvent>().Register(shootAfterFXEventBinding, true);
     }
 
     private void OnDisable()
     {
         EventBus<LocalPlayerSpawned>.Deregister(playerSpawnEventBinding);
-        EventBus<ShootAfterFXEvent>.Deregister(shootAfterFXEventBinding);
+        if (localEventBusManager != null) localEventBusManager.GetLocalEventBus<ShootAfterFXEvent>().Deregister(shootAfterFXEventBinding);
     }
 
     // Update is called once per frame
@@ -73,6 +74,9 @@ public class FirstPersonCamera : MonoBehaviour
         lookDirection = myCamera.transform.eulerAngles;
         lookOffsetCurrent = Vector3.zero;
         lookOffsetTimer = 0;
+
+        localEventBusManager = playerController.localEventBusManager;
+        localEventBusManager.GetLocalEventBus<ShootAfterFXEvent>().Register(shootAfterFXEventBinding, true);
     }
 
     void Recoil(ShootAfterFXEvent shootAfterFXEvent) 

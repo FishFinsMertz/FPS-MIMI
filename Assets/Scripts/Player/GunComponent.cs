@@ -37,19 +37,25 @@ public class GunComponent : NetworkBehaviour
 
     Coroutine reloadCoroutine = null;
 
+    private LocalEventBusManager localEventBusManager;
     private void OnEnable()
     {
-        shootEventBinding = new EventBinding<ShootEvent>(Shoot);
-        EventBus<ShootEvent>.Register(shootEventBinding);
 
+        shootEventBinding = new EventBinding<ShootEvent>(Shoot);
         reloadEventBinding = new EventBinding<ReloadEvent>(ReloadEventHandler);
-        EventBus<ReloadEvent>.Register(reloadEventBinding);
+        if (localEventBusManager != null)
+        {
+            Initialize(localEventBusManager);
+        }
     }
 
     private void OnDisable()
     {
-        EventBus<ShootEvent>.Deregister(shootEventBinding);
-        EventBus<ReloadEvent>.Deregister(reloadEventBinding);
+        if (localEventBusManager != null)
+        {
+            localEventBusManager.GetLocalEventBus<ShootEvent>().Deregister(shootEventBinding);
+            localEventBusManager.GetLocalEventBus<ReloadEvent>().Deregister(reloadEventBinding);
+        }
     }
 
     void Shoot(ShootEvent shootEvent) 
@@ -104,5 +110,11 @@ public class GunComponent : NetworkBehaviour
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
         rb.linearVelocity = dir * shootStrength;
         if (!bullet.GetComponent<NetworkObject>().IsSpawned) bullet.GetComponent<NetworkObject>().Spawn();
+    }
+    public void Initialize(LocalEventBusManager LEBM)
+    {
+        localEventBusManager = LEBM;
+        localEventBusManager.GetLocalEventBus<ShootEvent>().Register(shootEventBinding, true);
+        localEventBusManager.GetLocalEventBus<ReloadEvent>().Register(reloadEventBinding, true);
     }
 }
