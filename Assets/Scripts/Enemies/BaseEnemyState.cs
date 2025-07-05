@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GroundSwarmState
+public abstract class BaseEnemyState
 {
-    protected GroundSwarmController groundSwarm;
+    protected EnemyControllerBase enemy;
 
     List<Func<bool>> transitionGuards; 
 
-    public GroundSwarmState(GroundSwarmController groundSwarm)
+    public BaseEnemyState(EnemyControllerBase enemy)
     {
-        this.groundSwarm = groundSwarm;
+        this.enemy = enemy;
     }
 
     public virtual void Enter() { }

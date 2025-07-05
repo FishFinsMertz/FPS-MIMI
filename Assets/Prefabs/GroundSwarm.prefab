@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5305012222321641300}
   - component: {fileID: 6254892804016370209}
   - component: {fileID: -25533389120098141}
+  - component: {fileID: 2175825908570679789}
   m_Layer: 0
   m_Name: GroundSwarm
   m_TagString: Untagged
@@ -148,10 +149,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  targetUpdateTime: 1
-  moveSpeed: 10
-  targets: []
   rb: {fileID: 0}
+  targets: []
+  spawner: {fileID: 0}
+  moveSpeed: 7
+  slashRange: 2
+  slashDuration: 2
+  slashDmg: 10
 --- !u!114 &-25533389120098141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,6 +173,34 @@ MonoBehaviour:
   UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 0
   AutoSetKinematicOnDespawn: 0
+--- !u!114 &2175825908570679789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879884392912891831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0920210c6c4ebb74d9b0df7224cea569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  onDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11500000, guid: 20acfe26da0ab9e4782f24f8a8e527ee, type: 3}
+        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
+        m_MethodName: set_name
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: OnDeath
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4260925260010853413
 GameObject:
   m_ObjectHideFlags: 0

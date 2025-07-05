@@ -21,6 +21,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        // Raise events
         if (IsLocalPlayer)
         {
             EventBus<LocalPlayerSpawned>.Raise(new LocalPlayerSpawned
@@ -29,11 +30,14 @@ public class PlayerController : NetworkBehaviour
                 playerGameObject = this.gameObject
             });
         }
+
         EventBus<PlayerSpawnedEvent>.Raise(new PlayerSpawnedEvent
         {
             playerController = this,
             playerGameObject = this.gameObject
         });
+
+        // Input
         if (!IsOwner) return;
         playerInput = GetComponent<PlayerInput>();
         playerInput.actions.FindAction("Move").performed += OnMove;
@@ -44,6 +48,15 @@ public class PlayerController : NetworkBehaviour
         playerInput.actions.FindAction("Attack").performed += OnAttack;
         playerInput.actions.FindAction("Jump").started += OnJetpackStart;
         playerInput.actions.FindAction("Jump").canceled += OnJetpackEnd;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        EventBus<PlayerLeftEvent>.Raise(new PlayerLeftEvent
+        {
+            playerController = this,
+            playerGameObject = this.gameObject
+        });
     }
 
     void Awake()

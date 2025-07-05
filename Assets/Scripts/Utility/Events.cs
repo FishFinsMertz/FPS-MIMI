@@ -16,3 +16,9 @@ public struct PlayerSpawnedEvent : IEvent
     public GameObject playerGameObject;
 }
 
+public struct PlayerLeftEvent : IEvent
+{ 
+    public PlayerController playerController;
+    public GameObject playerGameObject;
+}
+

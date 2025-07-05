@@ -12,4 +12,12 @@ public class GroundSwarmChaseState : GroundSwarmState
         Vector3 direction = (target.transform.position - groundSwarm.transform.position).normalized;
         groundSwarm.rb.MovePosition(groundSwarm.transform.position + direction * groundSwarm.moveSpeed * Time.fixedDeltaTime);
     }
+
+    public override void Update()
+    {
+        if (groundSwarm.DistanceFromTarget(groundSwarm.GetCurrentTarget()) <= groundSwarm.slashRange)
+        {
+            groundSwarm.ChangeState(new GroundSwarmSlashState(groundSwarm));
+        }
+    }
 }
