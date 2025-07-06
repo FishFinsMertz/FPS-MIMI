@@ -37,13 +37,13 @@ public class LocalEventBus<T> : LocalEventBusBase where T : IEvent
     {
         if (local)
         {
-            HashSet<IEventBinding<T>> bindingsCopy = bindings;
+            var bindingsQueue = new Queue<IEventBinding<T>>(bindings);
 
-            while (bindingsCopy.Count > 0)
+            while (bindingsQueue.Count > 0)
             {
-                bindingsCopy.First().OnEvent.Invoke(@event);
-                bindingsCopy.First().OnEventNoArgs.Invoke();
-                bindingsCopy.Remove(bindingsCopy.First());
+                var binding = bindingsQueue.Dequeue();
+                binding.OnEvent.Invoke(@event);
+                binding.OnEventNoArgs.Invoke();
             }
         }
         else
