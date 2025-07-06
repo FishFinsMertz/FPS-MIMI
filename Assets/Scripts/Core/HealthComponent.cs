@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class HealthComponent : MonoBehaviour
+public struct OnDeath : IEvent {}
+
+public class HealthComponent : MonoBehaviour, IComponent
 {
     [Header("Owner Controller Script")]
 
@@ -9,8 +11,8 @@ public class HealthComponent : MonoBehaviour
     public float maxHealth = 100f;
     private float currentHealth;
 
-    [Header("Events")]
-    public UnityEvent onDeath;
+    // Private or hidden variables
+    private LocalEventBusManager localEventBusManager;
 
     private void Awake()
     {
@@ -43,11 +45,27 @@ public class HealthComponent : MonoBehaviour
     private void Die()
     {
         Debug.Log($"{gameObject.name} died.");
-        onDeath?.Invoke();
+        localEventBusManager.GetLocalEventBus<OnDeath>().Raise(new OnDeath { }, true);
     }
 
     public float GetHealth() => currentHealth;
     public float GetMaxHealth() => maxHealth;
 
     public void ResetHealth() => currentHealth = maxHealth;
+
+    // Events
+    private void OnEnable()
+    {
+        if (localEventBusManager != null)
+        {
+            Initialize(localEventBusManager);
+        }
+    }
+
+
+
+    public void Initialize(LocalEventBusManager LEBM)
+    {
+        localEventBusManager = LEBM;
+    }
 }

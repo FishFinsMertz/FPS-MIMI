@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Runtime.ConstrainedExecution;
+using System.Linq;
 
 public class LocalEventBusBase 
 {
@@ -36,10 +37,13 @@ public class LocalEventBus<T> : LocalEventBusBase where T : IEvent
     {
         if (local)
         {
-            foreach (var binding in bindings)
+            HashSet<IEventBinding<T>> bindingsCopy = bindings;
+
+            while (bindingsCopy.Count > 0)
             {
-                binding.OnEvent.Invoke(@event);
-                binding.OnEventNoArgs.Invoke();
+                bindingsCopy.First().OnEvent.Invoke(@event);
+                bindingsCopy.First().OnEventNoArgs.Invoke();
+                bindingsCopy.Remove(bindingsCopy.First());
             }
         }
         else
