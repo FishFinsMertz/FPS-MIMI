@@ -36,8 +36,11 @@ public class LocalEventBus<T> : LocalEventBusBase where T : IEvent
     {
         if (local)
         {
-            foreach (var binding in bindings)
+            var bindingsQueue = new Queue<IEventBinding<T>>(bindings);
+
+            while (bindingsQueue.Count > 0)
             {
+                var binding = bindingsQueue.Dequeue();
                 binding.OnEvent.Invoke(@event);
                 binding.OnEventNoArgs.Invoke();
             }
