@@ -12,16 +12,26 @@ public abstract class EnemyControllerBase : NetworkBehaviour
     // Events
     private EventBinding<PlayerSpawnedEvent> playerSpawnEventBinding;
     private EventBinding<PlayerLeftEvent> playerLeftEventBinding;
+    private EventBinding<OnDeath> onDeathEventBinding;
+
+    // local event bus
+    public LocalEventBusManager localEventBusManager { get; private set; } = new LocalEventBusManager();
 
     // Other Hidden Variables
     private float targetUpdateTime = 1f;
     protected BaseEnemyState currentState;
     protected GameObject currentTarget;
 
+    private HealthComponent health;
+
     protected virtual void Start()
     {
         StartCoroutine(UpdateTargetRoutine());
         rb = GetComponent<Rigidbody>();
+        if (TryGetComponent<HealthComponent>(out health))
+        {
+            health.Initialize(localEventBusManager);
+        }
     }
 
     void FixedUpdate()
@@ -50,11 +60,9 @@ public abstract class EnemyControllerBase : NetworkBehaviour
         playerLeftEventBinding = new EventBinding<PlayerLeftEvent>(RemoveTarget);
         EventBus<PlayerLeftEvent>.Register(playerLeftEventBinding);
 
-        // FOR DEATH LOGIC WITH HEALTH COMPONENT
-        if (TryGetComponent<HealthComponent>(out var health))
-        {
-            health.onDeath.AddListener(OnDeath);
-        }
+        // Locatl Events
+        onDeathEventBinding = new EventBinding<OnDeath>(OnDeath);
+        localEventBusManager.GetLocalEventBus<OnDeath>().Register(onDeathEventBinding, true);
     }
 
     private void OnDisable()
@@ -62,12 +70,7 @@ public abstract class EnemyControllerBase : NetworkBehaviour
         // Deregister events
         EventBus<PlayerSpawnedEvent>.Deregister(playerSpawnEventBinding);
         EventBus<PlayerLeftEvent>.Deregister(playerLeftEventBinding);
-
-        // FOR DEATH LOGIC WITH HEALTH COMPONENT
-        if (TryGetComponent<HealthComponent>(out var health))
-        {
-            health.onDeath.RemoveListener(OnDeath);
-        }
+        localEventBusManager.GetLocalEventBus<OnDeath>().Deregister(onDeathEventBinding);
     }
 
                                                                     // TARGET SELECTION
