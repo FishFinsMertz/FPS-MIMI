@@ -8,8 +8,9 @@ public class BulletSettings : ScriptableObject
     public BulletType type;
     public GameObject prefab;
     public bool isAffectedByGravity;
+    public float damage = 50f; // Change later
 
-    public Bullet Create() 
+    public Bullet Create()
     {
         GameObject gameObject = Instantiate(prefab);
         Bullet bullet = gameObject.AddComponent<Bullet>();

@@ -23,6 +23,18 @@ public class Bullet : NetworkBehaviour
     {
         GunComponent gun = collider.GetComponentInParent<GunComponent>();
         if (gun && gun.GetTeam() == this.team) return;
+
+        // Bullet damage logic on enemy
+        if (IsServer)
+        {
+            // Try to get HealthComponent on hit object or its parent
+            HealthComponent health = collider.GetComponentInParent<HealthComponent>();
+            if (health != null)
+            {
+                health.TakeDamage(bulletSettings.damage); // Add damageAmount field to BulletSettings
+            }
+        }
+
         BulletFactory.ReturnToPool(this);
     }
 }
