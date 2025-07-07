@@ -21,15 +21,12 @@ public class HealthComponent : MonoBehaviour, IComponent
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            TakeDamage(50);
-        }
     }
 
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
+        currentHealth = Mathf.Max(currentHealth, 0f); // Prevent health from going below 0
 
         if (currentHealth <= 0f)
         {
@@ -44,7 +41,7 @@ public class HealthComponent : MonoBehaviour, IComponent
 
     private void Die()
     {
-        Debug.Log($"{gameObject.name} died.");
+        //Debug.Log($"{gameObject.name} died.");
         localEventBusManager.GetLocalEventBus<OnDeath>().Raise(new OnDeath { }, true);
     }
 

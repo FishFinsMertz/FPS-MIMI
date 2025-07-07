@@ -16,6 +16,10 @@ public class PlayerController : NetworkBehaviour
     private Vector2 moveInput;
     private Vector2 lookInput;
     private Vector3 moveDirection;
+    private HealthComponent health;
+
+    // Events
+    private EventBinding<OnDeath> onDeathEventBinding;
 
     // -- object references
     private Transform cameraTransform;
@@ -76,6 +80,15 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
+        if (TryGetComponent<HealthComponent>(out health))
+        {
+            health.Initialize(localEventBusManager);
+        }
+
+        // Local Events
+        onDeathEventBinding = new EventBinding<OnDeath>(OnDeath);
+        localEventBusManager.GetLocalEventBus<OnDeath>().Register(onDeathEventBinding, true);
+
         ChangeState(new PlayerWalkState(this)); //Temporary, make this idle
     }
 
@@ -86,7 +99,12 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        //Debug.Log(currentState);  
+        
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            health.TakeDamage(50);
+        }
+        
         currentState.Update(); 
     }
 
@@ -126,6 +144,21 @@ public class PlayerController : NetworkBehaviour
     {
         localEventBusManager.GetLocalEventBus<JetpackEnd>().Raise(new JetpackEnd {}, true);
     }
+
+    public void OnDeath()
+    {
+        Debug.Log("Player Dead");
+        health.ResetHealth(); // TEMPORARY
+    }
+
+    public override void OnDestroy()
+    {
+        if (onDeathEventBinding != null)
+        {
+            localEventBusManager.GetLocalEventBus<OnDeath>().Deregister(onDeathEventBinding);
+        }
+    }
+
     public Vector2 GetMoveInput() => moveInput;
     public Vector2 GetLookInput() => lookInput;
     public Vector3 GetMoveDirection() => moveDirection;
