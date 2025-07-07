@@ -128,9 +128,10 @@ GameObject:
   - component: {fileID: 5812579976505501038}
   - component: {fileID: 2147783167051033923}
   - component: {fileID: 4749815893694403464}
+  - component: {fileID: 5045415102982401163}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -446,3 +447,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+--- !u!114 &5045415102982401163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8326366632986290431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93efb0f506d9469428b70a5ae1696b37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageableGroup: 0
+  health: {fileID: 4749815893694403464}

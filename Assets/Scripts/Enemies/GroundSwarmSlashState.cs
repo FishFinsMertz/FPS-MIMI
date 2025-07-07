@@ -12,8 +12,12 @@ public class GroundSwarmSlashState : GroundSwarmState
 
     private IEnumerator StartSlash()
     {
+        yield return new WaitForSeconds(groundSwarm.slashChargeDuration);
+        groundSwarm.slashHitBox.enabled = true;
         yield return new WaitForSeconds(groundSwarm.slashDuration);
-        Debug.Log("ENEMY SLASHED PLAYER FOR " + groundSwarm.slashDmg + " DAMAGE");
+        groundSwarm.slashHitBox.enabled = false;
+        Debug.Log("ENEMY SLASHED PLAYER");
+
         groundSwarm.ChangeState(new GroundSwarmChaseState(groundSwarm));
     }
 }

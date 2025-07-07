@@ -9,9 +9,12 @@ public class GroundSwarmController : EnemyControllerBase
     public float moveSpeed;
     public float slashRange;
 
+    [Header("Attack Hitboxes")]
+    public Collider slashHitBox;
+
     [Header("Attack Stats")]
+    public float slashChargeDuration;
     public float slashDuration;
-    public float slashDmg;
 
     protected override void Start()
     {
@@ -22,6 +25,9 @@ public class GroundSwarmController : EnemyControllerBase
     protected override void OnEnable()
     {
         base.OnEnable();
+
+        // Temporary to turn off all hitboxes
+        slashHitBox.enabled = false;
 
         // Restart state machine
         if (!IsServer) return;
