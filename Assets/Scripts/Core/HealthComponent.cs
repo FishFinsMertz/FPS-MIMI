@@ -60,6 +60,8 @@ public class HealthComponent : MonoBehaviour, IComponent
         {
             Initialize(localEventBusManager);
         }
+        
+        ResetHealth();
     }
 
 
