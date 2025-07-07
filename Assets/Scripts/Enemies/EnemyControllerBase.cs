@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Collections.Generic;
 using System.Collections;
+using Unity.IO.LowLevel.Unsafe;
 
 public abstract class EnemyControllerBase : NetworkBehaviour
 {
@@ -48,8 +49,8 @@ public abstract class EnemyControllerBase : NetworkBehaviour
         //Debug.Log(spawner);
     }
 
-                                                                // EVENTS
-    private void OnEnable()
+    // EVENTS
+    protected virtual void OnEnable()
     {
         //Debug.Log("Binding event");
 
@@ -60,12 +61,12 @@ public abstract class EnemyControllerBase : NetworkBehaviour
         playerLeftEventBinding = new EventBinding<PlayerLeftEvent>(RemoveTarget);
         EventBus<PlayerLeftEvent>.Register(playerLeftEventBinding);
 
-        // Locatl Events
+        // Local Events
         onDeathEventBinding = new EventBinding<OnDeath>(OnDeath);
         localEventBusManager.GetLocalEventBus<OnDeath>().Register(onDeathEventBinding, true);
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         // Deregister events
         EventBus<PlayerSpawnedEvent>.Deregister(playerSpawnEventBinding);

@@ -19,6 +19,15 @@ public class GroundSwarmController : EnemyControllerBase
         ChangeState(new GroundSwarmChaseState(this));
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+
+        // Restart state machine
+        if (!IsServer) return;
+         ChangeState(new GroundSwarmChaseState((GroundSwarmController)this));
+    }
+
     protected override void OnDeath()
     {
         spawner.RecycleEnemy(this.gameObject);
