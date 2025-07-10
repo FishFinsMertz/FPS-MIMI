@@ -17,4 +17,11 @@ public abstract class PlayerState
     public virtual void Update() { }
     public virtual void FixedUpdate() { }
     public virtual void Exit() { }
+    
+    // Input handling methods - each state can override these
+    public virtual void OnJump() { }
+    public virtual void OnStopJump() { }
+    public virtual void OnMove(Vector2 moveInput) { }
+    public virtual void OnLook(Vector2 lookInput) { }
+    public virtual void OnAttack() { }
 }
