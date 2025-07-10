@@ -9,6 +9,11 @@ public class PlayerController : NetworkBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private LayerMask groundLayer = 1; // Default layer
+    
+    [Header("Jump Settings")]
+    [SerializeField] private float jumpForce = 8f;
+    [SerializeField] private float jetpackActivationDelay = 0.3f;
     
     [SerializeField, ReadOnly(true)] private PlayerState currentState;
     public event Action<string> OnStateChanged;
@@ -23,6 +28,8 @@ public class PlayerController : NetworkBehaviour
 
     // -- object references
     private Transform cameraTransform;
+    private Transform feetPosition;
+    private Rigidbody rb;
     public LocalEventBusManager localEventBusManager  { get; private set; } = new LocalEventBusManager();
     [SerializeReference] List<MonoBehaviour> components = new List<MonoBehaviour>();
 
@@ -60,8 +67,10 @@ public class PlayerController : NetworkBehaviour
         playerInput.actions.FindAction("Look").performed += OnLook;
         playerInput.actions.FindAction("Look").canceled += OnLook;
         playerInput.actions.FindAction("Attack").performed += OnAttack;
-        playerInput.actions.FindAction("Jump").started += OnJetpackStart;
-        playerInput.actions.FindAction("Jump").canceled += OnJetpackEnd;
+        // playerInput.actions.FindAction("Jump").started += OnJetpackStart;
+        // playerInput.actions.FindAction("Jump").canceled += OnJetpackEnd;
+        playerInput.actions.FindAction("Jump").performed += OnJump;
+        playerInput.actions.FindAction("Jump").canceled += OnStopJump;
     }
 
     public override void OnNetworkDespawn()
@@ -76,6 +85,16 @@ public class PlayerController : NetworkBehaviour
     void Awake()
     {
         cameraTransform = Camera.main.transform;
+        feetPosition = transform.Find("PlayerFeet");
+        rb = GetComponent<Rigidbody>();
+        
+        // Add Rigidbody if it doesn't exist
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+            rb.freezeRotation = true; // Prevent rotation from physics
+            rb.angularVelocity = Vector3.zero;
+        }
     }
 
     void Start()
@@ -121,28 +140,38 @@ public class PlayerController : NetworkBehaviour
     public void OnMove(InputAction.CallbackContext ctx)
     {
         moveInput = ctx.ReadValue<Vector2>();
+        // Delegate to current state
+        currentState?.OnMove(moveInput);
     }
 
     public void OnLook(InputAction.CallbackContext ctx) 
     {
         lookInput = ctx.ReadValue<Vector2>();
         moveDirection = new Vector3(cameraTransform.forward.x, 0, cameraTransform.forward.z).normalized;
+        // Delegate to current state
+        currentState?.OnLook(lookInput);
     }
+    
     public void OnAttack(InputAction.CallbackContext ctx) 
     {
         localEventBusManager.GetLocalEventBus<ShootEvent>().Raise(new ShootEvent{
             bulletOrigin = Camera.main.transform.position,
             targetDirection = Camera.main.transform.forward,
         }, true);
+        // Delegate to current state
+        currentState?.OnAttack();
     }
-    public void OnJetpackStart(InputAction.CallbackContext ctx) 
+    
+    public void OnJump(InputAction.CallbackContext ctx) 
     {
-        // EventBruhs
-        localEventBusManager.GetLocalEventBus<JetpackStart>().Raise(new JetpackStart {}, true);
+        // Delegate to current state
+        currentState?.OnJump();
     }
-    public void OnJetpackEnd(InputAction.CallbackContext ctx)
+
+    public void OnStopJump(InputAction.CallbackContext ctx) 
     {
-        localEventBusManager.GetLocalEventBus<JetpackEnd>().Raise(new JetpackEnd {}, true);
+        // Delegate to current state
+        currentState?.OnStopJump();
     }
 
     public void OnDeath()
@@ -163,5 +192,9 @@ public class PlayerController : NetworkBehaviour
     public Vector2 GetLookInput() => lookInput;
     public Vector3 GetMoveDirection() => moveDirection;
     public float GetMoveSpeed() => moveSpeed;
-
+    public float GetJumpForce() => jumpForce;
+    public float GetJetpackActivationDelay() => jetpackActivationDelay;
+    public Rigidbody GetRigidbody() => rb;
+    public LayerMask GetGroundLayer() => groundLayer;
+    public Vector3 GetFeetPosition() => feetPosition.position;
 }

@@ -43,7 +43,6 @@ public class StateDisplayUI : NetworkBehaviour
 
     private void UpdateStateText(string newState)
     {
-        print("state updated");
         if (stateText != null)
         {
             stateText.text = statePrefix + newState;
