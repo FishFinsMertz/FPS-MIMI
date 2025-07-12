@@ -1,4 +1,5 @@
 using System.Collections;
+using NUnit.Framework.Internal.Filters;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -30,7 +31,18 @@ public class GunComponent : NetworkBehaviour, IComponent
 
     Coroutine reloadCoroutine = null;
 
+    [Header("HUD")]
+    public AmmoViewModel ammoViewModel;
     private LocalEventBusManager localEventBusManager;
+
+    public ViewModel CreateAndBindViewModel()
+    {
+        ammoViewModel = new AmmoViewModel();
+        ammoViewModel.SetMagCount(magCount);
+        ammoViewModel.SetAmmoCount(ammoCount);
+        return ammoViewModel;
+    }
+
     private void OnEnable()
     {
         shootEventBinding = new EventBinding<ShootEvent>(Shoot);
@@ -55,10 +67,11 @@ public class GunComponent : NetworkBehaviour, IComponent
         if (magCount == 0) return;
 
         if (magCount != -1) magCount--; //-1 means no reload/Infinite mag size
+        ammoViewModel?.SetMagCount(magCount);
 
         SpawnBulletServerRpc(shootEvent.bulletOrigin, shootEvent.targetDirection);
         EventBus<ShootAfterFXEvent>.Raise(new ShootAfterFXEvent {});
-        if (magCount == 0) Reload();
+        if (magCount <= 0) Reload();
     }
 
     void Reload() 
@@ -78,6 +91,8 @@ public class GunComponent : NetworkBehaviour, IComponent
         if (ammoCount != -1) ammoCount -= (magCount - prevMagCount);
 
         reloadCoroutine = null;
+        ammoViewModel?.SetMagCount(magCount);
+        ammoViewModel?.SetAmmoCount(ammoCount);
     }
 
     void ReloadEventHandler(ReloadEvent reloadEvent) 

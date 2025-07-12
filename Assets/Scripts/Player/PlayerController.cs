@@ -50,6 +50,9 @@ public class PlayerController : NetworkBehaviour
                     iComponent.Initialize(localEventBusManager);
                 }
             }
+
+            var uiBinder = FindAnyObjectByType<UIBinder>();
+            uiBinder.BindAll(components.ToArray());
         }
 
         EventBus<PlayerSpawnedEvent>.Raise(new PlayerSpawnedEvent
@@ -67,8 +70,6 @@ public class PlayerController : NetworkBehaviour
         playerInput.actions.FindAction("Look").performed += OnLook;
         playerInput.actions.FindAction("Look").canceled += OnLook;
         playerInput.actions.FindAction("Attack").performed += OnAttack;
-        // playerInput.actions.FindAction("Jump").started += OnJetpackStart;
-        // playerInput.actions.FindAction("Jump").canceled += OnJetpackEnd;
         playerInput.actions.FindAction("Jump").performed += OnJump;
         playerInput.actions.FindAction("Jump").canceled += OnStopJump;
     }

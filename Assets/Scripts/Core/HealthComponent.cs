@@ -13,20 +13,26 @@ public class HealthComponent : MonoBehaviour, IComponent
 
     // Private or hidden variables
     private LocalEventBusManager localEventBusManager;
+    public HealthViewModel healthViewModel;
 
     private void Awake()
     {
         currentHealth = maxHealth;
     }
 
-    public void Update()
+    public ViewModel CreateAndBindViewModel()
     {
+        healthViewModel = new HealthViewModel();
+        healthViewModel.SetHealth(currentHealth);
+        healthViewModel.SetMaxHealth(maxHealth);
+        return healthViewModel;
     }
 
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0f); // Prevent health from going below 0
+        healthViewModel?.SetHealth(currentHealth);
 
         if (currentHealth <= 0f)
         {
