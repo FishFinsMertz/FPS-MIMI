@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class GroundSwarmController : EnemyControllerBase
 {
-    [Header("Movement & Detection")]
-    public float moveSpeed;
+    [Header("Detection")]
     public float slashRange;
+    public BoidFlockingComponent boidFlocking;
 
     [Header("Attack Hitboxes")]
     public Collider slashHitBox;

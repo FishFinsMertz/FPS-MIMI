@@ -16,7 +16,8 @@ GameObject:
   - component: {fileID: -25533389120098141}
   - component: {fileID: 2175825908570679789}
   - component: {fileID: 3185463289746449162}
-  m_Layer: 0
+  - component: {fileID: 8623112522998074923}
+  m_Layer: 3
   m_Name: GroundSwarm
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -73,7 +74,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 879884392912891831}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 5
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -154,8 +155,8 @@ MonoBehaviour:
   rb: {fileID: 0}
   targets: []
   spawner: {fileID: 0}
-  moveSpeed: 7
   slashRange: 1.5
+  boidFlocking: {fileID: 8623112522998074923}
   slashHitBox: {fileID: 6995435767851010083}
   slashChargeDuration: 1
   slashDuration: 1
@@ -203,6 +204,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageableGroup: 1
   health: {fileID: 2175825908570679789}
+--- !u!114 &8623112522998074923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879884392912891831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0f4ffe483886e64aab45d07c39bbfd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  flockLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  cohesionWeight: 1.5
+  separationWeight: 3
+  alignmentWeight: 1
+  separationRadius: 4
+  cohesionRadius: 7
+  alignmentRadius: 6
+  moveSpeed: 5
 --- !u!1 &4260925260010853413
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,7 +239,7 @@ GameObject:
   - component: {fileID: 626166456834061468}
   - component: {fileID: 7649321493327823129}
   - component: {fileID: 3930245917533477756}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -322,7 +346,7 @@ GameObject:
   - component: {fileID: 5915613479390666476}
   - component: {fileID: 6995435767851010083}
   - component: {fileID: 7950631883118340655}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SlashHitBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}

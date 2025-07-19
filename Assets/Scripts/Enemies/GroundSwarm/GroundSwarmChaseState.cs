@@ -4,13 +4,11 @@ public class GroundSwarmChaseState : GroundSwarmState
 {
     public GroundSwarmChaseState(GroundSwarmController groundSwarm) : base(groundSwarm) { }
 
+    public float rotationSpeed = 4f;
     public override void FixedUpdate()
     {
-        GameObject target = groundSwarm.GetCurrentTarget();
-        if (target == null) return;
-
-        Vector3 direction = (target.transform.position - groundSwarm.transform.position).normalized;
-        groundSwarm.rb.MovePosition(groundSwarm.transform.position + direction * groundSwarm.moveSpeed * Time.fixedDeltaTime);
+        groundSwarm.boidFlocking.enabled = true;
+        groundSwarm.boidFlocking.target = groundSwarm.GetCurrentTarget().transform;
     }
 
     public override void Update()
@@ -19,5 +17,9 @@ public class GroundSwarmChaseState : GroundSwarmState
         {
             groundSwarm.ChangeState(new GroundSwarmSlashState(groundSwarm));
         }
+    }
+    public override void Exit()
+    {
+        groundSwarm.boidFlocking.enabled = false;
     }
 }
