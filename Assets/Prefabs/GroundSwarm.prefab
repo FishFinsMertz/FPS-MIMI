@@ -220,13 +220,18 @@ MonoBehaviour:
   flockLayer:
     serializedVersion: 2
     m_Bits: 8
-  cohesionWeight: 1.5
-  separationWeight: 3
+  cohesionWeight: 0.5
+  separationWeight: 1
   alignmentWeight: 1
   separationRadius: 4
   cohesionRadius: 7
   alignmentRadius: 6
   moveSpeed: 5
+  groundAlignSmoothTime: 1
+  groundRayDistance: 2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &4260925260010853413
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,23 +1,27 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody))] // ONLY FOR GROUNDED ENEMIES
 public class BoidFlockingComponent : MonoBehaviour
 {
     public Transform target;
     public LayerMask flockLayer;
 
     [Header("Weights")]
-    public float cohesionWeight = 1f;
-    public float separationWeight = 1f;
-    public float alignmentWeight = 1f;
+    public float cohesionWeight;
+    public float separationWeight;
+    public float alignmentWeight;
 
     [Header("Radii")]
-    public float separationRadius = 2f;
-    public float cohesionRadius = 5f;
-    public float alignmentRadius = 5f;
+    public float separationRadius;
+    public float cohesionRadius;
+    public float alignmentRadius;
 
     [Header("Movement")]
-    public float moveSpeed = 7f;
+    public float moveSpeed;
+
+    [Header("Ground Checking")]
+    public float groundRayDistance;
+    public LayerMask groundLayer;
 
     private Rigidbody rb;
 
@@ -29,25 +33,37 @@ public class BoidFlockingComponent : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 flockDirection = CalculateFlocking();
+        bool isGrounded = Physics.Raycast(rb.position, Vector3.down, out RaycastHit hit, groundRayDistance, groundLayer);
+
         if (flockDirection != Vector3.zero)
         {
-            Vector3 velocity = flockDirection.normalized * moveSpeed;
-            rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
+            Vector3 movement = flockDirection.normalized;
 
-            // Zero vertical rotation when turning
-            Vector3 lookDir = flockDirection;
-            lookDir.y = 0;
-            if (lookDir != Vector3.zero)
+            // Adjust movement to follow ground slope if grounded
+            if (isGrounded)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(lookDir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
+                movement = Vector3.ProjectOnPlane(movement, hit.normal).normalized;
+                rb.linearVelocity = movement * moveSpeed;
+            }
+            else
+            {
+                // If not grounded, apply gravity or a falling effect
+                rb.linearVelocity += Vector3.down * 20f * Time.fixedDeltaTime;
+            }
+
+            // rotate to face movement direction 
+            if (movement != Vector3.zero)
+            {
+                Vector3 faceDirection = new Vector3(movement.x, movement.y, movement.z);
+                if (faceDirection != Vector3.zero)
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(faceDirection), Time.deltaTime * 10f);
             }
         }
 
         Debug.DrawRay(transform.position, flockDirection * 2f, Color.green);
     }
 
-    Vector3 CalculateFlocking()
+    private Vector3 CalculateFlocking()
     {
         Vector3 separation = Vector3.zero;
         Vector3 alignment = Vector3.zero;
