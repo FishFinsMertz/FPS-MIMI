@@ -227,7 +227,6 @@ MonoBehaviour:
   cohesionRadius: 7
   alignmentRadius: 6
   moveSpeed: 5
-  groundAlignSmoothTime: 1
   groundRayDistance: 2
   groundLayer:
     serializedVersion: 2

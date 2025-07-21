@@ -1909,7 +1909,7 @@ PrefabInstance:
     - target: {fileID: 2767506772196717193, guid: 530e59c2c73a0df4889e75c40981af06,
         type: 3}
       propertyPath: poolSize
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 2767506772196717193, guid: 530e59c2c73a0df4889e75c40981af06,
         type: 3}

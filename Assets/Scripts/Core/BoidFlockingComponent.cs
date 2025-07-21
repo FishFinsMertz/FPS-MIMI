@@ -1,7 +1,8 @@
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))] // ONLY FOR GROUNDED ENEMIES
-public class BoidFlockingComponent : MonoBehaviour
+public class BoidFlockingComponent : NetworkBehaviour
 {
     public Transform target;
     public LayerMask flockLayer;
@@ -32,6 +33,7 @@ public class BoidFlockingComponent : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!IsServer) { return; }
         Vector3 flockDirection = CalculateFlocking();
         bool isGrounded = Physics.Raycast(rb.position, Vector3.down, out RaycastHit hit, groundRayDistance, groundLayer);
 
