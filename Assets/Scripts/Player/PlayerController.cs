@@ -30,7 +30,7 @@ public class PlayerController : NetworkBehaviour
     private Transform cameraTransform;
     private Transform feetPosition;
     private Rigidbody rb;
-    public LocalEventBusManager localEventBusManager  { get; private set; } = new LocalEventBusManager();
+    public LocalEventBusManager localEventBusManager  { get; private set; }
     [SerializeReference] List<MonoBehaviour> components = new List<MonoBehaviour>();
 
     public override void OnNetworkSpawn()
@@ -38,6 +38,7 @@ public class PlayerController : NetworkBehaviour
         // Raise events
         if (IsLocalPlayer)
         {
+            localEventBusManager = new LocalEventBusManager();
             EventBus<LocalPlayerSpawned>.Raise(new LocalPlayerSpawned
             {
                 playerController = this,

@@ -70,7 +70,7 @@ public class GunComponent : NetworkBehaviour, IComponent
         ammoViewModel?.SetMagCount(magCount);
 
         SpawnBulletServerRpc(shootEvent.bulletOrigin, shootEvent.targetDirection);
-        EventBus<ShootAfterFXEvent>.Raise(new ShootAfterFXEvent {});
+        localEventBusManager.GetLocalEventBus<ShootAfterFXEvent>().Raise(new ShootAfterFXEvent {}, true);
         if (magCount <= 0) Reload();
     }
 

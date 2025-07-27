@@ -11,6 +11,9 @@ public class FirstPersonCamera : MonoBehaviour
     [SerializeField] private float recoilTime = 0.1f; //These values should probably be attributes of the gun component
     [SerializeField] private float recoilReturnTimeMultiplier = 0.08f; //These values should probably be attributes of the gun component
     [SerializeField] private float recoilStrength = 3f;
+    [SerializeField] private float recoilShakeTime;
+    [SerializeField] private int recoilShakePeakNumber;
+    [SerializeField] private AnimationCurve recoilShakeCurve;
 
     [Header("Player Specs")]
     [SerializeField] private float cameraSensitivity = 1;
@@ -20,10 +23,12 @@ public class FirstPersonCamera : MonoBehaviour
     private Vector3 lookDirection;
 
     private Coroutine recoilCoroutine = null;
+    private Coroutine shakeCoroutine = null;
 
     private Vector3 lookOffsetInitial = Vector3.zero;
     private Vector3 lookOffsetCurrent = Vector3.zero;
     private Vector3 lookOffsetTarget = Vector3.zero;
+    private Vector3 cameraShakeOffset = Vector3.zero;
     private float lookOffsetTimer = 0;
 
     private EventBinding<LocalPlayerSpawned> playerSpawnEventBinding;
@@ -60,10 +65,9 @@ public class FirstPersonCamera : MonoBehaviour
         lookDirection.x = Mathf.Clamp(lookDirection.x, cameraXMinRotation, cameraXMaxRotation);
         lookDirection.y += lookDir.x * Time.deltaTime * cameraBaseMultiplier * cameraSensitivity;
 
-        Vector3 camDir = lookDirection + lookOffsetCurrent;
+        Vector3 camDir = lookDirection + lookOffsetCurrent + cameraShakeOffset;
         camDir.x = Mathf.Clamp(camDir.x, cameraXMinRotation, cameraXMaxRotation);
         myCamera.transform.eulerAngles = camDir;
-        
         myCamera.transform.position = playerController.transform.position + cameraPlayerOffset;
     }
 
@@ -81,10 +85,17 @@ public class FirstPersonCamera : MonoBehaviour
 
     void Recoil(ShootAfterFXEvent shootAfterFXEvent) 
     {
+        Debug.Log("HI");
         lookOffsetInitial = lookOffsetCurrent;
         lookOffsetTarget = lookOffsetInitial + Vector3.left * recoilStrength;
         lookOffsetTimer = 0;
         if (recoilCoroutine == null) recoilCoroutine = StartCoroutine(RecoilCoroutine());
+        if (shakeCoroutine == null) shakeCoroutine = StartCoroutine(ScreenShake());
+        else 
+        {
+            StopCoroutine(shakeCoroutine);
+            shakeCoroutine = StartCoroutine(ScreenShake());
+        }
     }
 
     IEnumerator RecoilCoroutine() 
@@ -113,5 +124,26 @@ public class FirstPersonCamera : MonoBehaviour
         }
         lookOffsetCurrent = Vector3.zero;
         recoilCoroutine = null;
+    }
+    IEnumerator ScreenShake() 
+    {
+        float[] peaks = new float[recoilShakePeakNumber * 2];
+        int sign = 1;
+        float peakTime = recoilShakeTime / (recoilShakePeakNumber * 2);
+        float peakTimer = 0;
+        for (int i = 1; i <= peaks.Length; i++) 
+        {
+            peaks[i - 1] = sign * (i % 2) * recoilShakeCurve.Evaluate(i / (float)peaks.Length);
+            Debug.Log("Shake"+sign+", "+i+", "+ recoilShakeCurve.Evaluate(i / (float)peaks.Length));
+            Vector3 initialOffset = cameraShakeOffset;
+            if (i % 2 == 1) sign = -sign;
+            while (peakTimer < peakTime)
+            {
+                cameraShakeOffset = Vector3.Lerp(initialOffset, peaks[i - 1] * Vector3.up, peakTimer / peakTime);
+                peakTimer += Time.deltaTime;
+                yield return null;
+            }
+            peakTimer = 0;
+        }
     }
 }

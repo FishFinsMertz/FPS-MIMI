@@ -2488,8 +2488,43 @@ MonoBehaviour:
   cameraXMinRotation: -90
   cameraXMaxRotation: 90
   recoilTime: 0.1
-  recoilReturnTimeMultiplier: 1
+  recoilReturnTimeMultiplier: 0.2
   recoilStrength: 3
+  recoilShakeTime: 0.2
+  recoilShakePeakNumber: 3
+  recoilShakeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.038354486
+      value: 0.9797905
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0541687
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   cameraSensitivity: 1
 --- !u!1 &1444038595
 GameObject:
@@ -3615,6 +3650,11 @@ PrefabInstance:
     - target: {fileID: 2298601482814566773, guid: f00f4688a8082734cbd84e0793a11869,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3593285173067122102, guid: f00f4688a8082734cbd84e0793a11869,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5112070444652700809, guid: f00f4688a8082734cbd84e0793a11869,
